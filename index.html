@@ -1,28 +1,32 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RedFlag - MCA Financial Analysis</title>
-    <link rel="icon" href="/RedFlag/logo.png" />
-    <meta name="description" content="Analyze MCA financial JSON data and visualize potential risk or red flags through interactive charts and metrics." />
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://shishir-dey.github.io/RedFlag/" />
-    <meta property="og:title" content="RedFlag - MCA Financial Analysis" />
-    <meta property="og:description" content="Analyze MCA financial JSON data and visualize potential risk or red flags through interactive charts and metrics." />
-    <meta property="og:image" content="https://shishir-dey.github.io/RedFlag/logo.png" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RedFlag - MCA Financial Analysis</title>
+  <link rel="icon" href="/RedFlag/logo.png" />
+  <meta name="description"
+    content="Analyze MCA financial JSON data and visualize potential risk or red flags through interactive charts and metrics." />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://shishir-dey.github.io/RedFlag/" />
-    <meta property="twitter:title" content="RedFlag - MCA Financial Analysis" />
-    <meta property="twitter:description" content="Analyze MCA financial JSON data and visualize potential risk or red flags through interactive charts and metrics." />
-    <meta property="twitter:image" content="https://shishir-dey.github.io/RedFlag/logo.png" />
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://shishir-dey.github.io/RedFlag/" />
+  <meta property="og:title" content="RedFlag - MCA Financial Analysis" />
+  <meta property="og:description"
+    content="Analyze MCA financial JSON data and visualize potential risk or red flags through interactive charts and metrics." />
+  <meta property="og:image" content="https://shishir-dey.github.io/RedFlag/logo.png" />
 
-    <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json">
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://shishir-dey.github.io/RedFlag/" />
+  <meta property="twitter:title" content="RedFlag - MCA Financial Analysis" />
+  <meta property="twitter:description"
+    content="Analyze MCA financial JSON data and visualize potential risk or red flags through interactive charts and metrics." />
+  <meta property="twitter:image" content="https://shishir-dey.github.io/RedFlag/logo.png" />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
@@ -55,547 +59,1015 @@
       ]
     }
     </script>
-    <style>
-      body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: 14px;
-        margin: 0;
-        padding: 0;
-        background-color: #f5f5f7;
-        color: #1d1d1f;
-      }
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-        flex-wrap: wrap;
-        gap: 20px;
-      }
-      .title-section {
-        text-align: left;
-        display: flex;
-        align-items: center;
-      }
-      .logo {
-        height: 40px;
-        margin-right: 12px;
-      }
-      h1 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin: 0;
-        color: #1d1d1f;
-      }
-      .subtitle {
-        font-size: 0.9rem;
-        color: #86868b;
-        margin: 4px 0 0 0;
-        font-weight: 400;
-      }
-      .data-controls {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-      }
-      .data-controls label {
-        font-size: 14px;
-        color: #1d1d1f;
-        font-weight: 500;
-      }
-      input[type='file'] {
-        display: none;
-      }
-      .file-input-label {
-        background: #007aff;
-        color: white !important;
-        padding: 10px 20px;
-        border-radius: 12px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 2px 4px rgba(0, 122, 255, 0.2);
-        border: none;
-      }
-      .file-input-label:hover {
-        background: #0056cc;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0, 122, 255, 0.3);
-      }
-      button {
-        background: #007aff;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 12px;
-        font-family: inherit;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 2px 4px rgba(0, 122, 255, 0.2);
-      }
-      button:hover {
-        background: #0056cc;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0, 122, 255, 0.3);
-      }
-      .error {
-        color: #ff3b30;
-        margin-top: 8px;
-        font-size: 14px;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background: white;
-        padding: 8px 12px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-      }
-      .charts-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 16px;
-        margin-top: 20px;
-      }
-      @media (min-width: 768px) {
-        .charts-grid {
-          grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-        }
-      }
-      .chart-container {
-        background: white;
-        border-radius: 16px;
-        padding: 16px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        min-height: 250px;
-        display: flex;
-        flex-direction: column;
-        transition: all 0.3s ease;
-      }
-      .chart-container:hover {
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-        transform: translateY(-2px);
-      }
-      .chart-header {
-        margin-bottom: 20px;
-      }
-      .chart-title {
-        font-size: 1.4rem;
-        font-weight: 600;
-        color: #1d1d1f;
-        margin: 0 0 8px 0;
-      }
-      .chart-content {
-        flex: 1;
-        position: relative;
-        margin-bottom: 10px;
-      }
-      canvas {
-        max-width: 100%;
-        height: 100% !important;
-      }
-      .chart-controls {
-        display: grid;
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f7;
+      color: #1d1d1f;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .title-section {
+      text-align: left;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo {
+      height: 40px;
+      margin-right: 12px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0;
+      color: #1d1d1f;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #86868b;
+      margin: 4px 0 0 0;
+      font-weight: 400;
+    }
+
+    .data-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .data-controls label {
+      font-size: 14px;
+      color: #1d1d1f;
+      font-weight: 500;
+    }
+
+    input[type='file'] {
+      display: none;
+    }
+
+    .file-input-label {
+      background: #007aff;
+      color: white !important;
+      padding: 10px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 4px rgba(0, 122, 255, 0.2);
+      border: none;
+    }
+
+    .file-input-label:hover {
+      background: #0056cc;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 122, 255, 0.3);
+    }
+
+    button {
+      background: #007aff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 4px rgba(0, 122, 255, 0.2);
+    }
+
+    button:hover {
+      background: #0056cc;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 122, 255, 0.3);
+    }
+
+    .error {
+      color: #ff3b30;
+      margin-top: 8px;
+      font-size: 14px;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    /* Executive Summary Dashboard - 3 Column Grid */
+    .executive-summary {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    @media (min-width: 768px) {
+      .executive-summary {
         grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        padding-top: 16px;
-        border-top: 1px solid #f0f0f0;
       }
-      @media (min-width: 768px) {
-        .chart-controls {
-          grid-template-columns: repeat(3, 1fr);
-        }
+    }
+
+    @media (min-width: 1100px) {
+      .executive-summary {
+        grid-template-columns: 280px 1fr 320px;
       }
-      .control-group {
-        display: flex;
+    }
+
+    /* Risk Score Card - Light Theme */
+    .risk-score-card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 240px;
+    }
+
+    .risk-score-card h2 {
+      margin: 0 0 20px 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #86868b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .risk-score-gauge {
+      position: relative;
+      width: 140px;
+      height: 140px;
+    }
+
+    .risk-score-gauge svg {
+      transform: rotate(-90deg);
+      width: 140px;
+      height: 140px;
+    }
+
+    .risk-score-gauge .bg-circle {
+      fill: none;
+      stroke: #e8e8ed;
+      stroke-width: 10;
+    }
+
+    .risk-score-gauge .progress-circle {
+      fill: none;
+      stroke-width: 10;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s ease-out, stroke 0.5s ease;
+    }
+
+    .risk-score-gauge .progress-circle.low {
+      stroke: #4caf50;
+    }
+
+    .risk-score-gauge .progress-circle.medium {
+      stroke: #ff9800;
+    }
+
+    .risk-score-gauge .progress-circle.high {
+      stroke: #f44336;
+    }
+
+    .risk-score-value {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #1d1d1f;
+    }
+
+    .risk-score-label {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+
+    .risk-score-label.low {
+      color: #2e7d32;
+      background: rgba(76, 175, 80, 0.15);
+    }
+
+    .risk-score-label.medium {
+      color: #e65100;
+      background: rgba(255, 152, 0, 0.15);
+    }
+
+    .risk-score-label.high {
+      color: #c62828;
+      background: rgba(244, 67, 54, 0.15);
+    }
+
+    /* Key Metrics Card */
+    .key-metrics-card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .key-metrics-card h2 {
+      margin: 0 0 20px 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #86868b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      flex: 1;
+    }
+
+    @media (min-width: 1100px) {
+      .metrics-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .metric-item:hover {
+      background: #f0f1f3;
+      transform: translateY(-2px);
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: #86868b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1d1d1f;
+    }
+
+    .metric-value.positive {
+      color: #4caf50;
+    }
+
+    .metric-value.negative {
+      color: #f44336;
+    }
+
+    .metric-value.warning {
+      color: #ff9800;
+    }
+
+    /* Alerts Card - No Scroll */
+    .alerts-card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .alerts-card h2 {
+      margin: 0 0 16px 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #86868b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .alerts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .alert-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .alert-item.critical {
+      background: rgba(244, 67, 54, 0.08);
+      border-left: 3px solid #f44336;
+    }
+
+    .alert-item.warning {
+      background: rgba(255, 152, 0, 0.08);
+      border-left: 3px solid #ff9800;
+    }
+
+    .alert-item.info {
+      background: rgba(33, 150, 243, 0.08);
+      border-left: 3px solid #2196f3;
+    }
+
+    .alert-item.success {
+      background: rgba(76, 175, 80, 0.08);
+      border-left: 3px solid #4caf50;
+    }
+
+    .alert-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+
+    /* Charts Grid */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Card Styling - Consistent Heights */
+    .chart-container {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      min-height: 420px;
+      height: 420px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .chart-container:hover {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .chart-container.expanded {
+      height: auto;
+      min-height: 520px;
+    }
+
+    .chart-header {
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .chart-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1d1d1f;
+      margin: 0;
+    }
+
+    .chart-content {
+      flex: 1;
+      position: relative;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    canvas {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .chart-insights {
+      font-size: 13px;
+      color: #333;
+      background: #f8f9fa;
+      margin: 12px 0;
+      font-weight: 400;
+      padding: 10px 12px 10px 36px;
+      border-radius: 8px;
+      position: relative;
+      flex-shrink: 0;
+      line-height: 1.4;
+    }
+
+    .chart-insights::before {
+      content: '💡';
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      font-size: 14px;
+    }
+
+    .chart-controls {
+      display: none;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid #eee;
+      margin-top: auto;
+      flex-shrink: 0;
+    }
+
+    .chart-container.expanded .chart-controls {
+      display: grid;
+    }
+
+    @media (min-width: 768px) {
+      .chart-controls {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Expand Toggle Button */
+    .expand-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 12px;
+      margin-top: auto;
+      background: #f5f5f7;
+      border: none;
+      border-radius: 8px;
+      color: #666;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      box-shadow: none;
+    }
+
+    .expand-toggle:hover {
+      background: #e8e8ed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .expand-icon {
+      font-size: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .chart-container.expanded .expand-icon {
+      transform: rotate(180deg);
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label {
+      font-size: 11px;
+      color: #86868b;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .control-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .control-input label {
+      font-size: 12px;
+      color: #1d1d1f;
+      font-weight: 500;
+      min-width: 40px;
+    }
+
+    input[type='range'] {
+      flex: 1;
+      height: 6px;
+      border-radius: 3px;
+      background: #e5e5ea;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: background 0.2s ease;
+    }
+
+    input[type='range']:hover {
+      background: #d1d1d6;
+    }
+
+    input[type='range']::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #007aff;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 122, 255, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    input[type='range']::-webkit-slider-thumb:hover {
+      background: #0056cc;
+      transform: scale(1.1);
+    }
+
+    input[type='range']::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #007aff;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0, 122, 255, 0.2);
+    }
+
+    input[type='number'] {
+      width: 100%;
+      max-width: 120px;
+      padding: 8px 10px;
+      border: 1px solid #d2d2d7;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      text-align: right;
+      transition: border-color 0.2s ease;
+    }
+
+    input[type='number']:focus {
+      outline: none;
+      border-color: #007aff;
+      box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+    }
+
+    .value-display {
+      font-size: 13px;
+      color: #007aff;
+      font-weight: 600;
+      min-width: 45px;
+      text-align: right;
+    }
+
+    /* Table styling for Key Metrics and Health Scorecard */
+    .chart-content table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .chart-content table td {
+      padding: 8px 10px !important;
+      border-bottom: 1px solid #eee !important;
+    }
+
+    .chart-content table tr:last-child td {
+      border-bottom: none !important;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 480px) {
+      .container {
+        padding: 12px;
+      }
+
+      header {
         flex-direction: column;
-        gap: 8px;
+        align-items: flex-start;
+        gap: 16px;
       }
-      .control-label {
-        font-size: 13px;
-        color: #86868b;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-      .control-input {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .control-input label {
-        font-size: 14px;
-        color: #1d1d1f;
-        font-weight: 500;
-        min-width: 60px;
-      }
-      input[type='range'] {
-        flex: 1;
-        height: 6px;
-        border-radius: 3px;
-        background: #e5e5ea;
-        outline: none;
-        -webkit-appearance: none;
-        transition: background 0.2s ease;
-      }
-      input[type='range']:hover {
-        background: #d1d1d6;
-      }
-      input[type='range']::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: #007aff;
-        cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0, 122, 255, 0.2);
-        transition: all 0.2s ease;
-      }
-      input[type='range']::-webkit-slider-thumb:hover {
-        background: #0056cc;
-        transform: scale(1.1);
-      }
-      input[type='range']::-moz-range-thumb {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: #007aff;
-        cursor: pointer;
-        border: none;
-        box-shadow: 0 2px 4px rgba(0, 122, 255, 0.2);
-      }
-      input[type='number'] {
-        width: 120px;
-        padding: 8px 12px;
-        border: 1px solid #d2d2d7;
-        border-radius: 8px;
-        font-family: inherit;
-        font-size: 14px;
-        text-align: right;
-        transition: border-color 0.2s ease;
-      }
-      input[type='number']:focus {
-        outline: none;
-        border-color: #007aff;
-        box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
-      }
-      .value-display {
-        font-size: 14px;
-        color: #007aff;
-        font-weight: 600;
-        min-width: 50px;
-        text-align: right;
-      }
-    </style>
-    <script type="module" crossorigin src="/RedFlag/assets/index-DXyENRcn.js"></script>
-  </head>
-  <body>
-    <div class="container">
-      <header>
-        <div class="title-section">
-          <img src="/RedFlag/logo.png" alt="RedFlag Logo" class="logo" />
-          <div>
-            <h1>RedFlag</h1>
-            <p class="subtitle">
-              Analyze MCA financial JSON data and visualize potential risk or red
-              flags
-            </p>
-          </div>
-        </div>
 
-        <div class="data-controls">
-          <label for="file-input" class="file-input-label">
-            📁 Upload JSON
-            <input type="file" id="file-input" accept=".json" />
-          </label>
-          <button id="download-sample" class="file-input-label">
-            ⬇️ Download Sample
-          </button>
-          <div id="error-message" class="error" style="display: none"></div>
-        </div>
-      </header>
+      .data-controls {
+        width: 100%;
+        justify-content: flex-start;
+      }
 
-      <div class="charts-grid" id="charts-container">
-        <div class="chart-container">
-          <div class="chart-header">
-            <h3 class="chart-title">Key Metrics Summary</h3>
+      .chart-container {
+        min-height: 380px;
+        height: 380px;
+        padding: 16px;
+      }
+
+      .chart-container.expanded {
+        min-height: 480px;
+      }
+
+      .chart-title {
+        font-size: 1rem;
+      }
+
+      .chart-insights {
+        font-size: 12px;
+        padding: 8px 10px 8px 32px;
+      }
+
+      .control-group {
+        min-width: 100%;
+      }
+
+      .quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat-card {
+        padding: 12px;
+      }
+
+      .stat-value {
+        font-size: 1.1rem;
+      }
+    }
+
+    /* Export button styling */
+    .export-btn {
+      background: #34c759;
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+
+    .export-btn:hover {
+      background: #2da44e;
+    }
+  </style>
+  <script type="module" crossorigin src="/RedFlag/assets/index-D60-sRXl.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="title-section">
+        <img src="/RedFlag/logo.png" alt="RedFlag Logo" class="logo" />
+        <div>
+          <h1>RedFlag</h1>
+          <p class="subtitle">
+            Analyze MCA financial JSON data and visualize potential risk or red
+            flags
+          </p>
+        </div>
+      </div>
+
+      <div class="data-controls">
+        <label for="file-input" class="file-input-label">
+          📁 Upload JSON
+          <input type="file" id="file-input" accept=".json" />
+        </label>
+        <button id="download-sample" class="file-input-label">
+          ⬇️ Download Sample
+        </button>
+        <button id="export-report" class="file-input-label export-btn">
+          📊 Export Report
+        </button>
+        <div id="error-message" class="error" style="display: none"></div>
+      </div>
+    </header>
+
+    <!-- Executive Summary - 3 Column Grid -->
+    <div class="executive-summary" id="executive-summary">
+      <!-- Risk Score Card -->
+      <div class="risk-score-card">
+        <h2>Risk Score</h2>
+        <div class="risk-score-gauge">
+          <svg viewBox="0 0 140 140">
+            <circle class="bg-circle" cx="70" cy="70" r="60"></circle>
+            <circle class="progress-circle low" id="progress-circle" cx="70" cy="70" r="60" stroke-dasharray="377"
+              stroke-dashoffset="377"></circle>
+          </svg>
+          <div class="risk-score-value" id="risk-score-value">--</div>
+        </div>
+        <div class="risk-score-label low" id="risk-score-label">Analyzing...</div>
+      </div>
+
+      <!-- Key Metrics Card -->
+      <div class="key-metrics-card">
+        <h2>Key Metrics</h2>
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <div class="metric-label">Revenue</div>
+            <div class="metric-value" id="metric-revenue">--</div>
           </div>
-          <div class="chart-content">
-            <canvas id="chart-key-metrics"></canvas>
+          <div class="metric-item">
+            <div class="metric-label">Net Profit</div>
+            <div class="metric-value" id="metric-profit">--</div>
           </div>
-          <div class="chart-controls">
-            <div class="control-group">
-              <div class="control-label">COGS Percentage</div>
-              <div class="control-input">
-                <label>70%</label>
-                <input
-                  type="range"
-                  id="cogs-slider"
-                  min="70"
-                  max="95"
-                  value="85"
-                  step="1"
-                />
-                <span class="value-display" id="cogs-value">85%</span>
-              </div>
-            </div>
+          <div class="metric-item">
+            <div class="metric-label">Net Margin</div>
+            <div class="metric-value" id="metric-margin">--</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-label">Current Ratio</div>
+            <div class="metric-value" id="metric-current-ratio">--</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-label">Debt/Equity</div>
+            <div class="metric-value" id="metric-debt-equity">--</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-label">Cash</div>
+            <div class="metric-value" id="metric-cash">--</div>
           </div>
         </div>
-        <div class="chart-container">
-          <div class="chart-header">
-            <h3 class="chart-title">Financial Health Scorecard</h3>
-          </div>
-          <div class="chart-content">
-            <canvas id="chart-health-scorecard"></canvas>
-          </div>
-          <div class="chart-controls">
-            <div class="control-group">
-              <div class="control-label">Threshold Multiplier</div>
-              <div class="control-input">
-                <label>0.5x</label>
-                <input
-                  type="range"
-                  id="scorecard-slider"
-                  min="0.5"
-                  max="2.0"
-                  value="1.0"
-                  step="0.1"
-                />
-                <span class="value-display" id="scorecard-value">1.0x</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="chart-container">
-          <div class="chart-header">
-            <h3 class="chart-title">Profit & Loss Waterfall</h3>
-          </div>
-          <div class="chart-content">
-            <canvas id="chart-profit-loss"></canvas>
-          </div>
-          <div class="chart-controls">
-            <div class="control-group">
-              <div class="control-label">Revenue</div>
-              <div class="control-input">
-                <input
-                  type="number"
-                  id="revenue-input"
-                  value="21135840"
-                  step="100000"
-                />
-              </div>
-            </div>
-            <div class="control-group">
-              <div class="control-label">Other Income</div>
-              <div class="control-input">
-                <input
-                  type="number"
-                  id="other-income-input"
-                  value="41500"
-                  step="1000"
-                />
-              </div>
-            </div>
-            <div class="control-group">
-              <div class="control-label">Total Expenses</div>
-              <div class="control-input">
-                <input
-                  type="number"
-                  id="expenses-input"
-                  value="20796210"
-                  step="100000"
-                />
-              </div>
-            </div>
-            <div class="control-group">
-              <div class="control-label">PAT</div>
-              <div class="control-input">
-                <input
-                  type="number"
-                  id="pat-input"
-                  value="339130"
-                  step="10000"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="chart-container">
-          <div class="chart-header">
-            <h3 class="chart-title">Asset Composition</h3>
-          </div>
-          <div class="chart-content">
-            <canvas id="chart-assets"></canvas>
-          </div>
-          <div class="chart-controls">
-            <div class="control-group">
-              <div class="control-label">Fixed Assets</div>
-              <div class="control-input">
-                <input
-                  type="number"
-                  id="fixed-assets-input"
-                  value="18290470"
-                  step="100000"
-                />
-              </div>
-            </div>
-            <div class="control-group">
-              <div class="control-label">Inventories</div>
-              <div class="control-input">
-                <input
-                  type="number"
-                  id="inventories-input"
-                  value="12185870"
-                  step="100000"
-                />
-              </div>
-            </div>
-            <div class="control-group">
-              <div class="control-label">Receivables</div>
-              <div class="control-input">
-                <input
-                  type="number"
-                  id="receivables-input"
-                  value="3366600"
-                  step="100000"
-                />
-              </div>
-            </div>
-            <div class="control-group">
-              <div class="control-label">Cash</div>
-              <div class="control-input">
-                <input
-                  type="number"
-                  id="cash-input"
-                  value="83340"
-                  step="10000"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="chart-container">
-          <div class="chart-header">
-            <h3 class="chart-title">Liability & Equity Composition</h3>
-          </div>
-          <div class="chart-content">
-            <canvas id="chart-liabilities"></canvas>
-          </div>
-          <div class="chart-controls">
-            <div class="control-group">
-              <div class="control-label">Equity</div>
-              <div class="control-input">
-                <input
-                  type="number"
-                  id="equity-input"
-                  value="19970670"
-                  step="100000"
-                />
-              </div>
-            </div>
-            <div class="control-group">
-              <div class="control-label">Long-term Debt</div>
-              <div class="control-input">
-                <input
-                  type="number"
-                  id="long-term-debt-input"
-                  value="8593270"
-                  step="100000"
-                />
-              </div>
-            </div>
-            <div class="control-group">
-              <div class="control-label">Trade Payables</div>
-              <div class="control-input">
-                <input
-                  type="number"
-                  id="payables-input"
-                  value="7267880"
-                  step="100000"
-                />
-              </div>
-            </div>
-            <div class="control-group">
-              <div class="control-label">Other Current Liab</div>
-              <div class="control-input">
-                <input
-                  type="number"
-                  id="other-liabilities-input"
-                  value="5370870"
-                  step="100000"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="chart-container">
-          <div class="chart-header">
-            <h3 class="chart-title">Liquidity Indicators</h3>
-          </div>
-          <div class="chart-content">
-            <canvas id="chart-liquidity"></canvas>
-          </div>
-          <div class="chart-controls">
-            <div class="control-group">
-              <div class="control-label">Target Ratio</div>
-              <div class="control-input">
-                <label>0.5</label>
-                <input
-                  type="range"
-                  id="liquidity-slider"
-                  min="0.5"
-                  max="3.0"
-                  value="1.5"
-                  step="0.1"
-                />
-                <span class="value-display" id="liquidity-value">1.5</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="chart-container">
-          <div class="chart-header">
-            <h3 class="chart-title">Working Capital Cycle</h3>
-          </div>
-          <div class="chart-content">
-            <canvas id="chart-working-capital"></canvas>
-          </div>
-          <div class="chart-controls">
-            <div class="control-group">
-              <div class="control-label">Benchmark Days</div>
-              <div class="control-input">
-                <label>30</label>
-                <input
-                  type="range"
-                  id="working-capital-slider"
-                  min="30"
-                  max="200"
-                  value="90"
-                  step="10"
-                />
-                <span class="value-display" id="working-capital-value">90</span>
-              </div>
-            </div>
+      </div>
+
+      <!-- Alerts Card -->
+      <div class="alerts-card">
+        <h2>🎯 Insights</h2>
+        <div class="alerts-list" id="alerts-list">
+          <div class="alert-item info">
+            <span class="alert-icon">📊</span>
+            <span>Upload financial data to see insights</span>
           </div>
         </div>
       </div>
     </div>
 
-  </body>
+    <div class="charts-grid" id="charts-container">
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3 class="chart-title">Key Metrics Summary</h3>
+        </div>
+        <div class="chart-content">
+          <canvas id="chart-key-metrics"></canvas>
+        </div>
+        <div class="chart-controls">
+          <div class="control-group">
+            <div class="control-label">COGS Percentage</div>
+            <div class="control-input">
+              <label>70%</label>
+              <input type="range" id="cogs-slider" min="70" max="95" value="85" step="1" />
+              <span class="value-display" id="cogs-value">85%</span>
+            </div>
+          </div>
+        </div>
+        <button class="expand-toggle" aria-expanded="false">
+          <span class="expand-icon">▼</span>
+          <span class="expand-text">Adjust Parameters</span>
+        </button>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3 class="chart-title">Financial Health Scorecard</h3>
+        </div>
+        <div class="chart-content">
+          <canvas id="chart-health-scorecard"></canvas>
+        </div>
+        <div class="chart-controls">
+          <div class="control-group">
+            <div class="control-label">Threshold Multiplier</div>
+            <div class="control-input">
+              <label>0.5x</label>
+              <input type="range" id="scorecard-slider" min="0.5" max="2.0" value="1.0" step="0.1" />
+              <span class="value-display" id="scorecard-value">1.0x</span>
+            </div>
+          </div>
+        </div>
+        <button class="expand-toggle" aria-expanded="false">
+          <span class="expand-icon">▼</span>
+          <span class="expand-text">Adjust Parameters</span>
+        </button>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3 class="chart-title">Profit & Loss Waterfall</h3>
+        </div>
+        <div class="chart-content">
+          <canvas id="chart-profit-loss"></canvas>
+        </div>
+        <div class="chart-controls">
+          <div class="control-group">
+            <div class="control-label">Revenue</div>
+            <div class="control-input">
+              <input type="number" id="revenue-input" value="21135840" step="100000" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Other Income</div>
+            <div class="control-input">
+              <input type="number" id="other-income-input" value="41500" step="1000" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Total Expenses</div>
+            <div class="control-input">
+              <input type="number" id="expenses-input" value="20796210" step="100000" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">PAT</div>
+            <div class="control-input">
+              <input type="number" id="pat-input" value="339130" step="10000" />
+            </div>
+          </div>
+        </div>
+        <button class="expand-toggle" aria-expanded="false">
+          <span class="expand-icon">▼</span>
+          <span class="expand-text">Edit Values</span>
+        </button>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3 class="chart-title">Asset Composition</h3>
+        </div>
+        <div class="chart-content">
+          <canvas id="chart-assets"></canvas>
+        </div>
+        <div class="chart-controls">
+          <div class="control-group">
+            <div class="control-label">Fixed Assets</div>
+            <div class="control-input">
+              <input type="number" id="fixed-assets-input" value="18290470" step="100000" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Inventories</div>
+            <div class="control-input">
+              <input type="number" id="inventories-input" value="12185870" step="100000" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Receivables</div>
+            <div class="control-input">
+              <input type="number" id="receivables-input" value="3366600" step="100000" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Cash</div>
+            <div class="control-input">
+              <input type="number" id="cash-input" value="83340" step="10000" />
+            </div>
+          </div>
+        </div>
+        <button class="expand-toggle" aria-expanded="false">
+          <span class="expand-icon">▼</span>
+          <span class="expand-text">Edit Values</span>
+        </button>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3 class="chart-title">Liability & Equity Composition</h3>
+        </div>
+        <div class="chart-content">
+          <canvas id="chart-liabilities"></canvas>
+        </div>
+        <div class="chart-controls">
+          <div class="control-group">
+            <div class="control-label">Equity</div>
+            <div class="control-input">
+              <input type="number" id="equity-input" value="19970670" step="100000" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Long-term Debt</div>
+            <div class="control-input">
+              <input type="number" id="long-term-debt-input" value="8593270" step="100000" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Trade Payables</div>
+            <div class="control-input">
+              <input type="number" id="payables-input" value="7267880" step="100000" />
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Other Current Liab</div>
+            <div class="control-input">
+              <input type="number" id="other-liabilities-input" value="5370870" step="100000" />
+            </div>
+          </div>
+        </div>
+        <button class="expand-toggle" aria-expanded="false">
+          <span class="expand-icon">▼</span>
+          <span class="expand-text">Edit Values</span>
+        </button>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3 class="chart-title">Liquidity Indicators</h3>
+        </div>
+        <div class="chart-content">
+          <canvas id="chart-liquidity"></canvas>
+        </div>
+        <div class="chart-controls">
+          <div class="control-group">
+            <div class="control-label">Target Ratio</div>
+            <div class="control-input">
+              <label>0.5</label>
+              <input type="range" id="liquidity-slider" min="0.5" max="3.0" value="1.5" step="0.1" />
+              <span class="value-display" id="liquidity-value">1.5</span>
+            </div>
+          </div>
+        </div>
+        <button class="expand-toggle" aria-expanded="false">
+          <span class="expand-icon">▼</span>
+          <span class="expand-text">Adjust Parameters</span>
+        </button>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3 class="chart-title">Working Capital Cycle</h3>
+        </div>
+        <div class="chart-content">
+          <canvas id="chart-working-capital"></canvas>
+        </div>
+        <div class="chart-controls">
+          <div class="control-group">
+            <div class="control-label">Benchmark Days</div>
+            <div class="control-input">
+              <label>30</label>
+              <input type="range" id="working-capital-slider" min="30" max="200" value="90" step="10" />
+              <span class="value-display" id="working-capital-value">90</span>
+            </div>
+          </div>
+        </div>
+        <button class="expand-toggle" aria-expanded="false">
+          <span class="expand-icon">▼</span>
+          <span class="expand-text">Adjust Parameters</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</body>
+
 </html>
