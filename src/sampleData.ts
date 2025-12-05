@@ -1,0 +1,52 @@
+import { FinancialData } from './types';
+
+export const sampleData: FinancialData = {
+  company_name: 'PP Waterballs Limited',
+  income_statement: {
+    revenue: 21135840,
+    other_income: 41500,
+    total_expenses: 20796210,
+    pbt: 339630,
+    pat: 339130,
+  },
+  assets: {
+    fixed_assets: {
+      property_equipment: 4609060,
+      intangible_assets: 6083660,
+      other_non_current: 7600750,
+    },
+    current_assets: {
+      inventories: 12185870,
+      trade_receivables: 3366600,
+      cash: 83340,
+      other_current: 6268040,
+    },
+  },
+  liabilities: {
+    equity: {
+      share_capital: 3750000,
+      reserves_surplus: 16218770,
+    },
+    non_current_liabilities: {
+      long_term_borrowings: 8593270,
+      deferred_tax: 940,
+      long_term_provisions: 138200,
+    },
+    current_liabilities: {
+      trade_payables: 7267880,
+      other_current_liabilities: 4228260,
+      short_term_provisions: 0,
+      current_liability: 1149610,
+    },
+  },
+  shareholding: {
+    Prem: 3000000,
+    Prakash: 750000,
+  },
+  pending_allotment: {
+    Prem: 706500,
+    Prakash: 600000,
+  },
+  forex_exposure_usd: 31701.9,
+  usd_to_inr_rate: 83,
+};
