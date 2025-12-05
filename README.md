@@ -1,4 +1,4 @@
-# RedFlag - MCA Financial Analysis Web App
+# <img src="public/logo.png" height="24" /> RedFlag - MCA Financial Analysis Web App
 
 RedFlag is a modern, responsive web application that analyzes MCA (Ministry of Corporate Affairs) financial data and visualizes potential risk indicators or "red flags" through interactive charts and metrics.
 

@@ -4,6 +4,57 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RedFlag - MCA Financial Analysis</title>
+    <link rel="icon" href="/logo.png" />
+    <meta name="description" content="Analyze MCA financial JSON data and visualize potential risk or red flags through interactive charts and metrics." />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://shishir-dey.github.io/RedFlag/" />
+    <meta property="og:title" content="RedFlag - MCA Financial Analysis" />
+    <meta property="og:description" content="Analyze MCA financial JSON data and visualize potential risk or red flags through interactive charts and metrics." />
+    <meta property="og:image" content="https://shishir-dey.github.io/RedFlag/logo.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://shishir-dey.github.io/RedFlag/" />
+    <meta property="twitter:title" content="RedFlag - MCA Financial Analysis" />
+    <meta property="twitter:description" content="Analyze MCA financial JSON data and visualize potential risk or red flags through interactive charts and metrics." />
+    <meta property="twitter:image" content="https://shishir-dey.github.io/RedFlag/logo.png" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "RedFlag - MCA Financial Analysis",
+      "description": "Analyze MCA financial JSON data and visualize potential risk or red flags through interactive charts and metrics.",
+      "url": "https://shishir-dey.github.io/RedFlag/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "author": {
+        "@type": "Person",
+        "name": "Shishir Dey"
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Shishir Dey"
+      },
+      "image": "https://shishir-dey.github.io/RedFlag/logo.png",
+      "screenshot": "https://shishir-dey.github.io/RedFlag/logo.png",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Financial data analysis",
+        "Interactive charts",
+        "Risk visualization",
+        "MCA compliance",
+        "Real-time metrics"
+      ]
+    }
+    </script>
     <style>
       body {
         font-family:
@@ -29,17 +80,23 @@
       }
       .title-section {
         text-align: left;
+        display: flex;
+        align-items: center;
+      }
+      .logo {
+        height: 40px;
+        margin-right: 12px;
       }
       h1 {
-        font-size: 2.5rem;
+        font-size: 1.5rem;
         font-weight: 700;
         margin: 0;
         color: #1d1d1f;
       }
       .subtitle {
-        font-size: 1.1rem;
+        font-size: 0.9rem;
         color: #86868b;
-        margin: 10px 0 0 0;
+        margin: 4px 0 0 0;
         font-weight: 400;
       }
       .data-controls {
@@ -246,11 +303,14 @@
     <div class="container">
       <header>
         <div class="title-section">
-          <h1>RedFlag</h1>
-          <p class="subtitle">
-            Analyze MCA financial JSON data and visualize potential risk or red
-            flags
-          </p>
+          <img src="/logo.png" alt="RedFlag Logo" class="logo" />
+          <div>
+            <h1>RedFlag</h1>
+            <p class="subtitle">
+              Analyze MCA financial JSON data and visualize potential risk or red
+              flags
+            </p>
+          </div>
         </div>
 
         <div class="data-controls">
