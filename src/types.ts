@@ -50,15 +50,9 @@ export interface Liabilities {
   current_liabilities: CurrentLiabilities;
 }
 
-export interface Shareholding {
-  Prem: number;
-  Prakash: number;
-}
-
-export interface PendingAllotment {
-  Prem: number;
-  Prakash: number;
-}
+// Dynamic shareholding - supports any promoter names
+export type Shareholding = Record<string, number>;
+export type PendingAllotment = Record<string, number>;
 
 export interface FinancialData {
   company_name: string;
@@ -69,6 +63,12 @@ export interface FinancialData {
   pending_allotment: PendingAllotment;
   forex_exposure_usd: number;
   usd_to_inr_rate: number;
+  // Optional valuation/market data for fundamental analysis
+  market_cap?: number;
+  share_price?: number;
+  eps?: number;
+  diluted_eps?: number;
+  total_shares?: number;
 }
 
 export interface Metrics {

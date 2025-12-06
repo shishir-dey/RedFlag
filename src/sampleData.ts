@@ -49,4 +49,10 @@ export const sampleData: FinancialData = {
   },
   forex_exposure_usd: 31701.9,
   usd_to_inr_rate: 83,
+  // Fundamental analysis fields
+  market_cap: 150000000, // ₹15 Cr
+  share_price: 40,
+  total_shares: 3750000, // equals share_capital at ₹1 face value
+  eps: 9.04, // PAT / total_shares = 339130 / 3750000 * 100
+  diluted_eps: 8.75, // slightly lower due to pending allotments
 };

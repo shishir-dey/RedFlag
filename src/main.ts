@@ -19,6 +19,9 @@ import {
 import { sampleData } from './sampleData';
 import { Metrics } from './types';
 
+// LocalStorage key
+const STORAGE_KEY = 'redflag_data';
+
 // Global state
 let currentData: FinancialData | null = null;
 let currentMetrics: Metrics | null = null;
@@ -26,9 +29,7 @@ let cogsPercentage = 85; // Default COGS percentage
 
 // DOM elements
 const fileInput = document.getElementById('file-input') as HTMLInputElement;
-const downloadSampleBtn = document.getElementById(
-  'download-sample'
-) as HTMLButtonElement;
+const uploadBtn = document.getElementById('upload-btn') as HTMLButtonElement;
 const exportReportBtn = document.getElementById(
   'export-report'
 ) as HTMLButtonElement;
@@ -50,66 +51,37 @@ const metricCurrentRatio = document.getElementById('metric-current-ratio') as HT
 const metricDebtEquity = document.getElementById('metric-debt-equity') as HTMLDivElement;
 const metricCash = document.getElementById('metric-cash') as HTMLDivElement;
 
-console.log('DOM elements found:', {
-  fileInput: !!fileInput,
-  downloadSampleBtn: !!downloadSampleBtn,
-  errorMessage: !!errorMessage,
-  chartsContainer: !!chartsContainer,
-});
+// Company display elements
+const companyNameEl = document.getElementById('company-name') as HTMLHeadingElement;
+const promoterHoldingEl = document.getElementById('promoter-holding') as HTMLSpanElement;
+const marketCapEl = document.getElementById('market-cap') as HTMLSpanElement;
+const epsDisplayEl = document.getElementById('eps-display') as HTMLSpanElement;
+const dilutedEpsDisplayEl = document.getElementById('diluted-eps-display') as HTMLSpanElement;
 
-// Input elements for data editing
-const revenueInput = document.getElementById(
-  'revenue-input'
-) as HTMLInputElement;
-const otherIncomeInput = document.getElementById(
-  'other-income-input'
-) as HTMLInputElement;
-const expensesInput = document.getElementById(
-  'expenses-input'
-) as HTMLInputElement;
-const patInput = document.getElementById('pat-input') as HTMLInputElement;
-const fixedAssetsInput = document.getElementById(
-  'fixed-assets-input'
-) as HTMLInputElement;
-const inventoriesInput = document.getElementById(
-  'inventories-input'
-) as HTMLInputElement;
-const receivablesInput = document.getElementById(
-  'receivables-input'
-) as HTMLInputElement;
-const cashInput = document.getElementById('cash-input') as HTMLInputElement;
-const equityInput = document.getElementById('equity-input') as HTMLInputElement;
-const longTermDebtInput = document.getElementById(
-  'long-term-debt-input'
-) as HTMLInputElement;
-const payablesInput = document.getElementById(
-  'payables-input'
-) as HTMLInputElement;
-const otherLiabilitiesInput = document.getElementById(
-  'other-liabilities-input'
-) as HTMLInputElement;
+// Modal elements
+const modalOverlay = document.getElementById('modal-overlay') as HTMLDivElement;
+const modalCloseBtn = document.getElementById('modal-close-btn') as HTMLButtonElement;
+const modalCancelBtn = document.getElementById('modal-cancel-btn') as HTMLButtonElement;
+const modalSaveBtn = document.getElementById('modal-save-btn') as HTMLButtonElement;
+const modalFileInput = document.getElementById('modal-file-input') as HTMLInputElement;
 
-// Sliders and value displays
-const cogsSlider = document.getElementById('cogs-slider') as HTMLInputElement;
-const cogsValue = document.getElementById('cogs-value') as HTMLSpanElement;
-const scorecardSlider = document.getElementById(
-  'scorecard-slider'
-) as HTMLInputElement;
-const scorecardValue = document.getElementById(
-  'scorecard-value'
-) as HTMLSpanElement;
-const liquiditySlider = document.getElementById(
-  'liquidity-slider'
-) as HTMLInputElement;
-const liquidityValue = document.getElementById(
-  'liquidity-value'
-) as HTMLSpanElement;
-const workingCapitalSlider = document.getElementById(
-  'working-capital-slider'
-) as HTMLInputElement;
-const workingCapitalValue = document.getElementById(
-  'working-capital-value'
-) as HTMLSpanElement;
+// Modal form inputs
+const modalRevenue = document.getElementById('modal-revenue') as HTMLInputElement;
+const modalOtherIncome = document.getElementById('modal-other-income') as HTMLInputElement;
+const modalExpenses = document.getElementById('modal-expenses') as HTMLInputElement;
+const modalPat = document.getElementById('modal-pat') as HTMLInputElement;
+const modalFixedAssets = document.getElementById('modal-fixed-assets') as HTMLInputElement;
+const modalInventories = document.getElementById('modal-inventories') as HTMLInputElement;
+const modalReceivables = document.getElementById('modal-receivables') as HTMLInputElement;
+const modalCash = document.getElementById('modal-cash') as HTMLInputElement;
+const modalEquity = document.getElementById('modal-equity') as HTMLInputElement;
+const modalLongTermDebt = document.getElementById('modal-long-term-debt') as HTMLInputElement;
+const modalPayables = document.getElementById('modal-payables') as HTMLInputElement;
+const modalOtherLiabilities = document.getElementById('modal-other-liabilities') as HTMLInputElement;
+const modalMarketCap = document.getElementById('modal-market-cap') as HTMLInputElement;
+const modalSharePrice = document.getElementById('modal-share-price') as HTMLInputElement;
+const modalEps = document.getElementById('modal-eps') as HTMLInputElement;
+const modalDilutedEps = document.getElementById('modal-diluted-eps') as HTMLInputElement;
 
 // Chart canvases and containers
 const canvases = {
@@ -132,13 +104,6 @@ const containers = {
   keyMetrics: canvases.keyMetrics.parentElement!,
   healthScorecard: canvases.healthScorecard.parentElement!,
 };
-
-console.log(
-  'Canvases found:',
-  Object.keys(canvases).map(
-    (key) => `${key}: ${!!canvases[key as keyof typeof canvases]}`
-  )
-);
 
 // Calculate risk score based on financial metrics
 function calculateRiskScore(metrics: Metrics): { score: number; level: 'low' | 'medium' | 'high' } {
@@ -358,6 +323,41 @@ function updateKeyMetrics() {
   metricCash.className = `metric-value ${currentData.assets.current_assets.cash >= 100000 ? 'positive' : 'negative'}`;
 }
 
+// Update company display section
+function updateCompanyDisplay() {
+  if (!currentData) return;
+
+  // Company name
+  companyNameEl.textContent = currentData.company_name;
+
+  // Calculate promoter holding percentage
+  const totalShares = currentData.total_shares || currentData.liabilities.equity.share_capital;
+  const totalShareholding = Object.values(currentData.shareholding).reduce((a, b) => a + b, 0);
+  const promoterHoldingPct = totalShares > 0 ? ((totalShareholding / totalShares) * 100).toFixed(1) : '--';
+  promoterHoldingEl.textContent = `${promoterHoldingPct}%`;
+
+  // Market cap
+  if (currentData.market_cap) {
+    marketCapEl.textContent = formatINR(currentData.market_cap);
+  } else {
+    marketCapEl.textContent = '--';
+  }
+
+  // EPS
+  if (currentData.eps !== undefined) {
+    epsDisplayEl.textContent = `₹${currentData.eps.toFixed(2)}`;
+  } else {
+    epsDisplayEl.textContent = '--';
+  }
+
+  // Diluted EPS
+  if (currentData.diluted_eps !== undefined) {
+    dilutedEpsDisplayEl.textContent = `₹${currentData.diluted_eps.toFixed(2)}`;
+  } else {
+    dilutedEpsDisplayEl.textContent = '--';
+  }
+}
+
 // Validate JSON data
 function validateData(data: any): data is FinancialData {
   return (
@@ -386,6 +386,27 @@ function hideError() {
   errorMessage.style.display = 'none';
 }
 
+// Save data to localStorage
+function saveToLocalStorage(data: FinancialData) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+// Load data from localStorage
+function loadFromLocalStorage(): FinancialData | null {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      const data = JSON.parse(stored);
+      if (validateData(data)) {
+        return data;
+      }
+    } catch (e) {
+      console.error('Error parsing stored data:', e);
+    }
+  }
+  return null;
+}
+
 // Load data from file
 function loadFromFile(file: File) {
   const reader = new FileReader();
@@ -395,11 +416,13 @@ function loadFromFile(file: File) {
       if (validateData(data)) {
         currentData = data;
         currentMetrics = calculateMetrics(data, cogsPercentage);
+        saveToLocalStorage(data);
         renderCharts();
-        populateInputFields();
         updateRiskDashboard();
         updateKeyMetrics();
+        updateCompanyDisplay();
         hideError();
+        closeModal();
       } else {
         showError('Invalid JSON structure. Please check the required fields.');
       }
@@ -408,20 +431,6 @@ function loadFromFile(file: File) {
     }
   };
   reader.readAsText(file);
-}
-
-// Download sample data
-function downloadSampleData() {
-  const dataStr = JSON.stringify(sampleData, null, 2);
-  const dataBlob = new Blob([dataStr], { type: 'application/json' });
-  const url = URL.createObjectURL(dataBlob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'sample_financial_data.json';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
 }
 
 // Export report as text
@@ -490,13 +499,20 @@ Report generated by RedFlag - MCA Financial Analysis
   URL.revokeObjectURL(url);
 }
 
-// Load sample data
-function loadSampleData() {
-  currentData = sampleData;
-  currentMetrics = calculateMetrics(sampleData, cogsPercentage);
+// Load initial data (from localStorage or sample)
+function loadInitialData() {
+  const storedData = loadFromLocalStorage();
+  if (storedData) {
+    currentData = storedData;
+  } else {
+    currentData = sampleData;
+    saveToLocalStorage(sampleData);
+  }
+  currentMetrics = calculateMetrics(currentData, cogsPercentage);
   renderCharts();
   updateRiskDashboard();
   updateKeyMetrics();
+  updateCompanyDisplay();
   hideError();
 }
 
@@ -508,14 +524,15 @@ function addInsights(chartId: string, insight: string) {
   const container = canvas.closest('.chart-container') as HTMLElement;
   if (!container) return;
 
-  const controls = container.querySelector('.chart-controls') as HTMLElement;
-  if (!controls) return;
-
   let insightsDiv = container.querySelector('.chart-insights') as HTMLElement;
   if (!insightsDiv) {
     insightsDiv = document.createElement('div');
     insightsDiv.className = 'chart-insights';
-    container.insertBefore(insightsDiv, controls);
+    // Insert after chart-content
+    const chartContent = container.querySelector('.chart-content');
+    if (chartContent) {
+      chartContent.after(insightsDiv);
+    }
   }
   insightsDiv.textContent = insight;
 }
@@ -527,15 +544,8 @@ function renderCharts() {
     return;
   }
 
-  console.log(
-    'Rendering charts with data:',
-    currentData,
-    'metrics:',
-    currentMetrics
-  );
   chartsContainer.style.display = 'grid';
 
-  // For now, use default parameters since we're focusing on data inputs
   try {
     createKeyMetricsChart(
       containers.keyMetrics,
@@ -559,7 +569,6 @@ function renderCharts() {
     );
     createLiquidityChart(canvases.liquidity, currentMetrics, 1.5);
     createWorkingCapitalChart(canvases.workingCapital, currentMetrics, 90);
-    console.log('Charts rendered successfully');
 
     // Add insights
     addInsights('key-metrics', generateKeyMetricsInsights(currentData, currentMetrics));
@@ -574,7 +583,128 @@ function renderCharts() {
   }
 }
 
+// Modal functions
+function openModal() {
+  modalOverlay.classList.add('active');
+  populateModalForm();
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modalOverlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function populateModalForm() {
+  if (!currentData) return;
+
+  modalRevenue.value = currentData.income_statement.revenue.toString();
+  modalOtherIncome.value = currentData.income_statement.other_income.toString();
+  modalExpenses.value = currentData.income_statement.total_expenses.toString();
+  modalPat.value = currentData.income_statement.pat.toString();
+
+  const totalFixedAssets = Object.values(currentData.assets.fixed_assets).reduce((a, b) => a + b, 0);
+  modalFixedAssets.value = totalFixedAssets.toString();
+  modalInventories.value = currentData.assets.current_assets.inventories.toString();
+  modalReceivables.value = currentData.assets.current_assets.trade_receivables.toString();
+  modalCash.value = currentData.assets.current_assets.cash.toString();
+
+  const totalEquity = Object.values(currentData.liabilities.equity).reduce((a, b) => a + b, 0);
+  modalEquity.value = totalEquity.toString();
+  modalLongTermDebt.value = currentData.liabilities.non_current_liabilities.long_term_borrowings.toString();
+  modalPayables.value = currentData.liabilities.current_liabilities.trade_payables.toString();
+  const totalOtherLiabilities =
+    Object.values(currentData.liabilities.current_liabilities).reduce((a, b) => a + b, 0) -
+    currentData.liabilities.current_liabilities.trade_payables;
+  modalOtherLiabilities.value = totalOtherLiabilities.toString();
+
+  // Optional fields
+  modalMarketCap.value = currentData.market_cap?.toString() || '';
+  modalSharePrice.value = currentData.share_price?.toString() || '';
+  modalEps.value = currentData.eps?.toString() || '';
+  modalDilutedEps.value = currentData.diluted_eps?.toString() || '';
+}
+
+function saveModalForm() {
+  if (!currentData) return;
+
+  // Update income statement
+  currentData.income_statement.revenue = parseFloat(modalRevenue.value) || 0;
+  currentData.income_statement.other_income = parseFloat(modalOtherIncome.value) || 0;
+  currentData.income_statement.total_expenses = parseFloat(modalExpenses.value) || 0;
+  currentData.income_statement.pat = parseFloat(modalPat.value) || 0;
+  currentData.income_statement.pbt = currentData.income_statement.pat; // Simplified
+
+  // Update assets
+  const fixedAssets = parseFloat(modalFixedAssets.value) || 0;
+  currentData.assets.fixed_assets.property_equipment = Math.round(fixedAssets * 0.25);
+  currentData.assets.fixed_assets.intangible_assets = Math.round(fixedAssets * 0.33);
+  currentData.assets.fixed_assets.other_non_current = Math.round(fixedAssets * 0.42);
+
+  currentData.assets.current_assets.inventories = parseFloat(modalInventories.value) || 0;
+  currentData.assets.current_assets.trade_receivables = parseFloat(modalReceivables.value) || 0;
+  currentData.assets.current_assets.cash = parseFloat(modalCash.value) || 0;
+  currentData.assets.current_assets.other_current = parseFloat(modalCash.value) * 75; // Simplified
+
+  // Update liabilities
+  const equity = parseFloat(modalEquity.value) || 0;
+  currentData.liabilities.equity.share_capital = Math.round(equity * 0.19);
+  currentData.liabilities.equity.reserves_surplus = Math.round(equity * 0.81);
+
+  currentData.liabilities.non_current_liabilities.long_term_borrowings = parseFloat(modalLongTermDebt.value) || 0;
+  currentData.liabilities.current_liabilities.trade_payables = parseFloat(modalPayables.value) || 0;
+  currentData.liabilities.current_liabilities.other_current_liabilities =
+    Math.round((parseFloat(modalOtherLiabilities.value) || 0) * 0.78);
+  currentData.liabilities.current_liabilities.current_liability = Math.round(
+    (parseFloat(modalOtherLiabilities.value) || 0) * 0.22
+  );
+
+  // Optional fields
+  if (modalMarketCap.value) currentData.market_cap = parseFloat(modalMarketCap.value);
+  if (modalSharePrice.value) currentData.share_price = parseFloat(modalSharePrice.value);
+  if (modalEps.value) currentData.eps = parseFloat(modalEps.value);
+  if (modalDilutedEps.value) currentData.diluted_eps = parseFloat(modalDilutedEps.value);
+
+  // Recalculate metrics and update UI
+  currentMetrics = calculateMetrics(currentData, cogsPercentage);
+  saveToLocalStorage(currentData);
+  renderCharts();
+  updateRiskDashboard();
+  updateKeyMetrics();
+  updateCompanyDisplay();
+  closeModal();
+}
+
 // Event listeners
+uploadBtn.addEventListener('click', openModal);
+
+modalCloseBtn.addEventListener('click', closeModal);
+modalCancelBtn.addEventListener('click', closeModal);
+modalSaveBtn.addEventListener('click', saveModalForm);
+
+// Close modal on escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+    closeModal();
+  }
+});
+
+// Close modal on backdrop click
+modalOverlay.addEventListener('click', (e) => {
+  if (e.target === modalOverlay) {
+    closeModal();
+  }
+});
+
+// File input in modal
+modalFileInput.addEventListener('change', (e) => {
+  const file = (e.target as HTMLInputElement).files?.[0];
+  if (file) {
+    loadFromFile(file);
+  }
+});
+
+// Hidden file input (for external file trigger)
 fileInput.addEventListener('change', (e) => {
   const file = (e.target as HTMLInputElement).files?.[0];
   if (file) {
@@ -582,200 +712,9 @@ fileInput.addEventListener('change', (e) => {
   }
 });
 
-downloadSampleBtn.addEventListener('click', downloadSampleData);
-
 if (exportReportBtn) {
   exportReportBtn.addEventListener('click', exportReport);
 }
 
-// Update value displays
-function updateValueDisplays() {
-  cogsValue.textContent = `${cogsSlider.value}%`;
-  scorecardValue.textContent = `${scorecardSlider.value}x`;
-  liquidityValue.textContent = liquiditySlider.value;
-  workingCapitalValue.textContent = workingCapitalSlider.value;
-}
-
-// Update data from input fields
-function updateDataFromInputs() {
-  if (!currentData) return;
-
-  // Update income statement
-  currentData.income_statement.revenue = parseFloat(revenueInput.value) || 0;
-  currentData.income_statement.other_income =
-    parseFloat(otherIncomeInput.value) || 0;
-  currentData.income_statement.total_expenses =
-    parseFloat(expensesInput.value) || 0;
-  currentData.income_statement.pat = parseFloat(patInput.value) || 0;
-  currentData.income_statement.pbt = currentData.income_statement.pat; // Simplified
-
-  // Update assets
-  const fixedAssets = parseFloat(fixedAssetsInput.value) || 0;
-  currentData.assets.fixed_assets.property_equipment = Math.round(
-    fixedAssets * 0.25
-  );
-  currentData.assets.fixed_assets.intangible_assets = Math.round(
-    fixedAssets * 0.33
-  );
-  currentData.assets.fixed_assets.other_non_current = Math.round(
-    fixedAssets * 0.42
-  );
-
-  currentData.assets.current_assets.inventories =
-    parseFloat(inventoriesInput.value) || 0;
-  currentData.assets.current_assets.trade_receivables =
-    parseFloat(receivablesInput.value) || 0;
-  currentData.assets.current_assets.cash = parseFloat(cashInput.value) || 0;
-  currentData.assets.current_assets.other_current =
-    parseFloat(cashInput.value) * 75; // Simplified
-
-  // Update liabilities
-  const equity = parseFloat(equityInput.value) || 0;
-  currentData.liabilities.equity.share_capital = Math.round(equity * 0.19);
-  currentData.liabilities.equity.reserves_surplus = Math.round(equity * 0.81);
-
-  currentData.liabilities.non_current_liabilities.long_term_borrowings =
-    parseFloat(longTermDebtInput.value) || 0;
-  currentData.liabilities.current_liabilities.trade_payables =
-    parseFloat(payablesInput.value) || 0;
-  currentData.liabilities.current_liabilities.other_current_liabilities =
-    Math.round((parseFloat(otherLiabilitiesInput.value) || 0) * 0.78);
-  currentData.liabilities.current_liabilities.current_liability = Math.round(
-    (parseFloat(otherLiabilitiesInput.value) || 0) * 0.22
-  );
-
-  // Recalculate metrics
-  currentMetrics = calculateMetrics(currentData, cogsPercentage);
-  renderCharts();
-  updateRiskDashboard();
-  updateKeyMetrics();
-}
-
-// Populate input fields with current data
-function populateInputFields() {
-  if (!currentData) return;
-
-  revenueInput.value = currentData.income_statement.revenue.toString();
-  otherIncomeInput.value = currentData.income_statement.other_income.toString();
-  expensesInput.value = currentData.income_statement.total_expenses.toString();
-  patInput.value = currentData.income_statement.pat.toString();
-
-  const totalFixedAssets = Object.values(
-    currentData.assets.fixed_assets
-  ).reduce((a, b) => a + b, 0);
-  fixedAssetsInput.value = totalFixedAssets.toString();
-  inventoriesInput.value =
-    currentData.assets.current_assets.inventories.toString();
-  receivablesInput.value =
-    currentData.assets.current_assets.trade_receivables.toString();
-  cashInput.value = currentData.assets.current_assets.cash.toString();
-
-  const totalEquity = Object.values(currentData.liabilities.equity).reduce(
-    (a, b) => a + b,
-    0
-  );
-  equityInput.value = totalEquity.toString();
-  longTermDebtInput.value =
-    currentData.liabilities.non_current_liabilities.long_term_borrowings.toString();
-  payablesInput.value =
-    currentData.liabilities.current_liabilities.trade_payables.toString();
-  const totalOtherLiabilities =
-    Object.values(currentData.liabilities.current_liabilities).reduce(
-      (a, b) => a + b,
-      0
-    ) - currentData.liabilities.current_liabilities.trade_payables;
-  otherLiabilitiesInput.value = totalOtherLiabilities.toString();
-}
-
-// Slider event listeners - only render on mouseup/touchend
-cogsSlider.addEventListener('input', () => {
-  cogsValue.textContent = `${cogsSlider.value}%`;
-});
-
-cogsSlider.addEventListener('change', () => {
-  cogsPercentage = parseInt(cogsSlider.value);
-  if (currentData) {
-    currentMetrics = calculateMetrics(currentData, cogsPercentage);
-    renderCharts();
-    updateRiskDashboard();
-    updateKeyMetrics();
-  }
-});
-
-scorecardSlider.addEventListener('input', () => {
-  scorecardValue.textContent = `${scorecardSlider.value}x`;
-});
-
-scorecardSlider.addEventListener('change', () => {
-  renderCharts();
-});
-
-liquiditySlider.addEventListener('input', () => {
-  liquidityValue.textContent = liquiditySlider.value;
-});
-
-liquiditySlider.addEventListener('change', () => {
-  renderCharts();
-});
-
-workingCapitalSlider.addEventListener('input', () => {
-  workingCapitalValue.textContent = workingCapitalSlider.value;
-});
-
-workingCapitalSlider.addEventListener('change', () => {
-  renderCharts();
-});
-
-// Input field event listeners
-const inputFields = [
-  revenueInput,
-  otherIncomeInput,
-  expensesInput,
-  patInput,
-  fixedAssetsInput,
-  inventoriesInput,
-  receivablesInput,
-  cashInput,
-  equityInput,
-  longTermDebtInput,
-  payablesInput,
-  otherLiabilitiesInput,
-];
-
-inputFields.forEach((input) => {
-  input.addEventListener('input', updateDataFromInputs);
-});
-
-// Initialize with sample data
-loadSampleData();
-updateValueDisplays();
-populateInputFields();
-
-// Add expand/collapse toggle event listeners
-const expandToggleButtons = document.querySelectorAll('.expand-toggle');
-expandToggleButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const container = button.closest('.chart-container') as HTMLElement;
-    const isExpanded = container.classList.contains('expanded');
-
-    // Toggle expanded class
-    container.classList.toggle('expanded');
-
-    // Update aria-expanded and button text
-    button.setAttribute('aria-expanded', (!isExpanded).toString());
-    const textSpan = button.querySelector('.expand-text');
-    if (textSpan) {
-      if (!isExpanded) {
-        textSpan.textContent = 'Hide Controls';
-      } else {
-        // Restore original text based on card type
-        const title = container.querySelector('.chart-title')?.textContent || '';
-        if (title.includes('Profit') || title.includes('Asset') || title.includes('Liability')) {
-          textSpan.textContent = 'Edit Values';
-        } else {
-          textSpan.textContent = 'Adjust Parameters';
-        }
-      }
-    }
-  });
-});
+// Initialize with data
+loadInitialData();

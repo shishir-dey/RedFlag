@@ -764,6 +764,210 @@
     .export-btn:hover {
       background: #2da44e;
     }
+
+    /* Company Name Display */
+    .company-name-display {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 16px 24px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .company-name-display h2 {
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .company-name-display .company-meta {
+      display: flex;
+      gap: 24px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .company-name-display .meta-item {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .company-name-display .meta-label {
+      opacity: 0.7;
+      margin-right: 4px;
+    }
+
+    /* Modal Popup Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-container {
+      background: white;
+      border-radius: 16px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      position: relative;
+      animation: modalSlideIn 0.2s ease;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid #e8e8ed;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-close-btn {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ff5f57;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      box-shadow: none;
+      transition: transform 0.2s ease;
+    }
+
+    .modal-close-btn:hover {
+      transform: scale(1.1);
+      background: #ff5f57;
+      box-shadow: none;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1d1d1f;
+    }
+
+    .modal-body {
+      padding: 12px 16px;
+    }
+
+    .form-section {
+      margin-bottom: 12px;
+    }
+
+    .form-section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #86868b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .form-group label {
+      font-size: 10px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      padding: 6px 8px;
+      border: 1px solid #d2d2d7;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: inherit;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #007aff;
+      box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.1);
+    }
+
+    .modal-footer {
+      padding: 10px 16px;
+      border-top: 1px solid #e8e8ed;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .btn-secondary {
+      background: #f5f5f7;
+      color: #1d1d1f;
+      box-shadow: none;
+      padding: 6px 14px;
+      font-size: 13px;
+    }
+
+    .btn-secondary:hover {
+      background: #e8e8ed;
+      box-shadow: none;
+    }
+
+    .btn-primary {
+      background: #007aff;
+      color: white;
+      padding: 6px 14px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 700px) {
+      .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 500px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
@@ -782,12 +986,9 @@
       </div>
 
       <div class="data-controls">
-        <label for="file-input" class="file-input-label">
-          📁 Upload JSON
-          <input type="file" id="file-input" accept=".json" />
-        </label>
-        <button id="download-sample" class="file-input-label">
-          ⬇️ Download Sample
+        <input type="file" id="file-input" accept=".json" style="display: none" />
+        <button id="upload-btn" class="file-input-label">
+          📁 Upload
         </button>
         <button id="export-report" class="file-input-label export-btn">
           📊 Export Report
@@ -795,6 +996,125 @@
         <div id="error-message" class="error" style="display: none"></div>
       </div>
     </header>
+
+    <!-- Company Name Display -->
+    <div class="company-name-display" id="company-display">
+      <h2 id="company-name">Loading...</h2>
+      <div class="company-meta">
+        <span class="meta-item"><span class="meta-label">Promoter Holding:</span> <span
+            id="promoter-holding">--</span></span>
+        <span class="meta-item"><span class="meta-label">Market Cap:</span> <span id="market-cap">--</span></span>
+        <span class="meta-item"><span class="meta-label">EPS:</span> <span id="eps-display">--</span></span>
+        <span class="meta-item"><span class="meta-label">Diluted EPS:</span> <span
+            id="diluted-eps-display">--</span></span>
+      </div>
+    </div>
+
+    <!-- Modal Popup -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal-container">
+        <div class="modal-header">
+          <button class="modal-close-btn" id="modal-close-btn" title="Close"></button>
+          <h3 class="modal-title">Edit Financial Data</h3>
+        </div>
+        <div class="modal-body">
+          <div class="form-section">
+            <div class="form-section-title">Income Statement</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="modal-revenue">Revenue</label>
+                <input type="number" id="modal-revenue" step="100000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-other-income">Other Income</label>
+                <input type="number" id="modal-other-income" step="1000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-expenses">Total Expenses</label>
+                <input type="number" id="modal-expenses" step="100000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-pat">PAT (Net Profit)</label>
+                <input type="number" id="modal-pat" step="10000" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Assets</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="modal-fixed-assets">Fixed Assets</label>
+                <input type="number" id="modal-fixed-assets" step="100000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-inventories">Inventories</label>
+                <input type="number" id="modal-inventories" step="100000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-receivables">Trade Receivables</label>
+                <input type="number" id="modal-receivables" step="100000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-cash">Cash</label>
+                <input type="number" id="modal-cash" step="10000" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Liabilities</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="modal-equity">Total Equity</label>
+                <input type="number" id="modal-equity" step="100000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-long-term-debt">Long-term Debt</label>
+                <input type="number" id="modal-long-term-debt" step="100000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-payables">Trade Payables</label>
+                <input type="number" id="modal-payables" step="100000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-other-liabilities">Other Current Liab</label>
+                <input type="number" id="modal-other-liabilities" step="100000" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Valuation & Market Data (Optional)</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="modal-market-cap">Market Cap</label>
+                <input type="number" id="modal-market-cap" step="1000000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-share-price">Share Price</label>
+                <input type="number" id="modal-share-price" step="0.01" />
+              </div>
+              <div class="form-group">
+                <label for="modal-eps">EPS</label>
+                <input type="number" id="modal-eps" step="0.01" />
+              </div>
+              <div class="form-group">
+                <label for="modal-diluted-eps">Diluted EPS</label>
+                <input type="number" id="modal-diluted-eps" step="0.01" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div style="flex: 1;">
+            <input type="file" id="modal-file-input" accept=".json" style="font-size: 11px;" />
+          </div>
+          <button class="btn-secondary" id="modal-cancel-btn">Cancel</button>
+          <button class="btn-primary" id="modal-save-btn">Save</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Executive Summary - 3 Column Grid -->
     <div class="executive-summary" id="executive-summary">
@@ -863,20 +1183,6 @@
         <div class="chart-content">
           <canvas id="chart-key-metrics"></canvas>
         </div>
-        <div class="chart-controls">
-          <div class="control-group">
-            <div class="control-label">COGS Percentage</div>
-            <div class="control-input">
-              <label>70%</label>
-              <input type="range" id="cogs-slider" min="70" max="95" value="85" step="1" />
-              <span class="value-display" id="cogs-value">85%</span>
-            </div>
-          </div>
-        </div>
-        <button class="expand-toggle" aria-expanded="false">
-          <span class="expand-icon">▼</span>
-          <span class="expand-text">Adjust Parameters</span>
-        </button>
       </div>
 
       <div class="chart-container">
@@ -886,20 +1192,6 @@
         <div class="chart-content">
           <canvas id="chart-health-scorecard"></canvas>
         </div>
-        <div class="chart-controls">
-          <div class="control-group">
-            <div class="control-label">Threshold Multiplier</div>
-            <div class="control-input">
-              <label>0.5x</label>
-              <input type="range" id="scorecard-slider" min="0.5" max="2.0" value="1.0" step="0.1" />
-              <span class="value-display" id="scorecard-value">1.0x</span>
-            </div>
-          </div>
-        </div>
-        <button class="expand-toggle" aria-expanded="false">
-          <span class="expand-icon">▼</span>
-          <span class="expand-text">Adjust Parameters</span>
-        </button>
       </div>
 
       <div class="chart-container">
@@ -909,36 +1201,6 @@
         <div class="chart-content">
           <canvas id="chart-profit-loss"></canvas>
         </div>
-        <div class="chart-controls">
-          <div class="control-group">
-            <div class="control-label">Revenue</div>
-            <div class="control-input">
-              <input type="number" id="revenue-input" value="21135840" step="100000" />
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">Other Income</div>
-            <div class="control-input">
-              <input type="number" id="other-income-input" value="41500" step="1000" />
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">Total Expenses</div>
-            <div class="control-input">
-              <input type="number" id="expenses-input" value="20796210" step="100000" />
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">PAT</div>
-            <div class="control-input">
-              <input type="number" id="pat-input" value="339130" step="10000" />
-            </div>
-          </div>
-        </div>
-        <button class="expand-toggle" aria-expanded="false">
-          <span class="expand-icon">▼</span>
-          <span class="expand-text">Edit Values</span>
-        </button>
       </div>
 
       <div class="chart-container">
@@ -948,36 +1210,6 @@
         <div class="chart-content">
           <canvas id="chart-assets"></canvas>
         </div>
-        <div class="chart-controls">
-          <div class="control-group">
-            <div class="control-label">Fixed Assets</div>
-            <div class="control-input">
-              <input type="number" id="fixed-assets-input" value="18290470" step="100000" />
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">Inventories</div>
-            <div class="control-input">
-              <input type="number" id="inventories-input" value="12185870" step="100000" />
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">Receivables</div>
-            <div class="control-input">
-              <input type="number" id="receivables-input" value="3366600" step="100000" />
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">Cash</div>
-            <div class="control-input">
-              <input type="number" id="cash-input" value="83340" step="10000" />
-            </div>
-          </div>
-        </div>
-        <button class="expand-toggle" aria-expanded="false">
-          <span class="expand-icon">▼</span>
-          <span class="expand-text">Edit Values</span>
-        </button>
       </div>
 
       <div class="chart-container">
@@ -987,36 +1219,6 @@
         <div class="chart-content">
           <canvas id="chart-liabilities"></canvas>
         </div>
-        <div class="chart-controls">
-          <div class="control-group">
-            <div class="control-label">Equity</div>
-            <div class="control-input">
-              <input type="number" id="equity-input" value="19970670" step="100000" />
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">Long-term Debt</div>
-            <div class="control-input">
-              <input type="number" id="long-term-debt-input" value="8593270" step="100000" />
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">Trade Payables</div>
-            <div class="control-input">
-              <input type="number" id="payables-input" value="7267880" step="100000" />
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">Other Current Liab</div>
-            <div class="control-input">
-              <input type="number" id="other-liabilities-input" value="5370870" step="100000" />
-            </div>
-          </div>
-        </div>
-        <button class="expand-toggle" aria-expanded="false">
-          <span class="expand-icon">▼</span>
-          <span class="expand-text">Edit Values</span>
-        </button>
       </div>
 
       <div class="chart-container">
@@ -1026,20 +1228,6 @@
         <div class="chart-content">
           <canvas id="chart-liquidity"></canvas>
         </div>
-        <div class="chart-controls">
-          <div class="control-group">
-            <div class="control-label">Target Ratio</div>
-            <div class="control-input">
-              <label>0.5</label>
-              <input type="range" id="liquidity-slider" min="0.5" max="3.0" value="1.5" step="0.1" />
-              <span class="value-display" id="liquidity-value">1.5</span>
-            </div>
-          </div>
-        </div>
-        <button class="expand-toggle" aria-expanded="false">
-          <span class="expand-icon">▼</span>
-          <span class="expand-text">Adjust Parameters</span>
-        </button>
       </div>
 
       <div class="chart-container">
@@ -1049,20 +1237,6 @@
         <div class="chart-content">
           <canvas id="chart-working-capital"></canvas>
         </div>
-        <div class="chart-controls">
-          <div class="control-group">
-            <div class="control-label">Benchmark Days</div>
-            <div class="control-input">
-              <label>30</label>
-              <input type="range" id="working-capital-slider" min="30" max="200" value="90" step="10" />
-              <span class="value-display" id="working-capital-value">90</span>
-            </div>
-          </div>
-        </div>
-        <button class="expand-toggle" aria-expanded="false">
-          <span class="expand-icon">▼</span>
-          <span class="expand-text">Adjust Parameters</span>
-        </button>
       </div>
     </div>
   </div>
