@@ -1,11 +1,42 @@
 // Types for MCA Financial Data
 
 export interface IncomeStatement {
+  // Core required fields
   revenue: number;
   other_income: number;
   total_expenses: number;
   pbt: number;
   pat: number;
+
+  // Optional detailed fields for fundamental analysis (investing.com compatible)
+  // Revenue breakdown
+  gross_income?: number;
+  cost_of_goods_sold?: number;
+  gross_profit?: number;
+
+  // Operating expenses breakdown
+  operating_expenses?: number;
+  selling_general_admin?: number;
+  research_development?: number;
+  depreciation_amortization?: number;
+  operating_income?: number; // EBIT
+
+  // Non-operating items
+  interest_expense?: number;
+  interest_income?: number;
+  other_non_operating?: number;
+
+  // Taxes
+  income_tax?: number;
+  tax_rate?: number;
+
+  // Profitability metrics
+  ebitda?: number;
+  net_income_from_continuing_ops?: number;
+
+  // Per share data
+  basic_eps?: number;
+  dividend_per_share?: number;
 }
 
 export interface FixedAssets {

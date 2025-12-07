@@ -53,10 +53,7 @@ const metricCash = document.getElementById('metric-cash') as HTMLDivElement;
 
 // Company display elements
 const companyNameEl = document.getElementById('company-name') as HTMLHeadingElement;
-const promoterHoldingEl = document.getElementById('promoter-holding') as HTMLSpanElement;
-const marketCapEl = document.getElementById('market-cap') as HTMLSpanElement;
-const epsDisplayEl = document.getElementById('eps-display') as HTMLSpanElement;
-const dilutedEpsDisplayEl = document.getElementById('diluted-eps-display') as HTMLSpanElement;
+const companyMetaContainer = document.getElementById('company-meta-container') as HTMLDivElement;
 
 // Modal elements
 const modalOverlay = document.getElementById('modal-overlay') as HTMLDivElement;
@@ -65,23 +62,50 @@ const modalCancelBtn = document.getElementById('modal-cancel-btn') as HTMLButton
 const modalSaveBtn = document.getElementById('modal-save-btn') as HTMLButtonElement;
 const modalFileInput = document.getElementById('modal-file-input') as HTMLInputElement;
 
-// Modal form inputs
+// Modal form inputs - Revenue & Cost
 const modalRevenue = document.getElementById('modal-revenue') as HTMLInputElement;
 const modalOtherIncome = document.getElementById('modal-other-income') as HTMLInputElement;
+const modalCogs = document.getElementById('modal-cogs') as HTMLInputElement;
+const modalGrossProfit = document.getElementById('modal-gross-profit') as HTMLInputElement;
+
+// Modal form inputs - Operating Expenses
 const modalExpenses = document.getElementById('modal-expenses') as HTMLInputElement;
+const modalSga = document.getElementById('modal-sga') as HTMLInputElement;
+const modalRd = document.getElementById('modal-rd') as HTMLInputElement;
+const modalDepreciation = document.getElementById('modal-depreciation') as HTMLInputElement;
+
+// Modal form inputs - Profitability
+const modalOperatingIncome = document.getElementById('modal-operating-income') as HTMLInputElement;
+const modalEbitda = document.getElementById('modal-ebitda') as HTMLInputElement;
+const modalPbt = document.getElementById('modal-pbt') as HTMLInputElement;
 const modalPat = document.getElementById('modal-pat') as HTMLInputElement;
+
+// Modal form inputs - Interest & Taxes
+const modalInterestExpense = document.getElementById('modal-interest-expense') as HTMLInputElement;
+const modalInterestIncome = document.getElementById('modal-interest-income') as HTMLInputElement;
+const modalIncomeTax = document.getElementById('modal-income-tax') as HTMLInputElement;
+const modalTaxRate = document.getElementById('modal-tax-rate') as HTMLInputElement;
+
+// Modal form inputs - Assets
 const modalFixedAssets = document.getElementById('modal-fixed-assets') as HTMLInputElement;
 const modalInventories = document.getElementById('modal-inventories') as HTMLInputElement;
 const modalReceivables = document.getElementById('modal-receivables') as HTMLInputElement;
 const modalCash = document.getElementById('modal-cash') as HTMLInputElement;
+
+// Modal form inputs - Liabilities
 const modalEquity = document.getElementById('modal-equity') as HTMLInputElement;
 const modalLongTermDebt = document.getElementById('modal-long-term-debt') as HTMLInputElement;
 const modalPayables = document.getElementById('modal-payables') as HTMLInputElement;
 const modalOtherLiabilities = document.getElementById('modal-other-liabilities') as HTMLInputElement;
+
+// Modal form inputs - Valuation & Per Share
 const modalMarketCap = document.getElementById('modal-market-cap') as HTMLInputElement;
 const modalSharePrice = document.getElementById('modal-share-price') as HTMLInputElement;
 const modalEps = document.getElementById('modal-eps') as HTMLInputElement;
 const modalDilutedEps = document.getElementById('modal-diluted-eps') as HTMLInputElement;
+const modalDividend = document.getElementById('modal-dividend') as HTMLInputElement;
+const modalTotalShares = document.getElementById('modal-total-shares') as HTMLInputElement;
+
 
 // Chart canvases and containers
 const canvases = {
@@ -323,39 +347,75 @@ function updateKeyMetrics() {
   metricCash.className = `metric-value ${currentData.assets.current_assets.cash >= 100000 ? 'positive' : 'negative'}`;
 }
 
-// Update company display section
+// Update company display section with conditional rendering
 function updateCompanyDisplay() {
   if (!currentData) return;
 
   // Company name
   companyNameEl.textContent = currentData.company_name;
 
-  // Calculate promoter holding percentage
+  // Build meta items dynamically based on available data
+  const metaItems: { label: string; value: string }[] = [];
+
+  // Promoter Holding (always calculate if shareholding exists)
   const totalShares = currentData.total_shares || currentData.liabilities.equity.share_capital;
   const totalShareholding = Object.values(currentData.shareholding).reduce((a, b) => a + b, 0);
-  const promoterHoldingPct = totalShares > 0 ? ((totalShareholding / totalShares) * 100).toFixed(1) : '--';
-  promoterHoldingEl.textContent = `${promoterHoldingPct}%`;
+  if (totalShareholding > 0 && totalShares > 0) {
+    const promoterHoldingPct = ((totalShareholding / totalShares) * 100).toFixed(1);
+    metaItems.push({ label: 'Promoter Holding', value: `${promoterHoldingPct}%` });
+  }
 
-  // Market cap
+  // Market Cap
   if (currentData.market_cap) {
-    marketCapEl.textContent = formatINR(currentData.market_cap);
-  } else {
-    marketCapEl.textContent = '--';
+    metaItems.push({ label: 'Market Cap', value: formatINR(currentData.market_cap) });
+  }
+
+  // Share Price
+  if (currentData.share_price) {
+    metaItems.push({ label: 'Share Price', value: `₹${currentData.share_price.toFixed(2)}` });
   }
 
   // EPS
   if (currentData.eps !== undefined) {
-    epsDisplayEl.textContent = `₹${currentData.eps.toFixed(2)}`;
-  } else {
-    epsDisplayEl.textContent = '--';
+    metaItems.push({ label: 'EPS', value: `₹${currentData.eps.toFixed(2)}` });
   }
 
   // Diluted EPS
   if (currentData.diluted_eps !== undefined) {
-    dilutedEpsDisplayEl.textContent = `₹${currentData.diluted_eps.toFixed(2)}`;
-  } else {
-    dilutedEpsDisplayEl.textContent = '--';
+    metaItems.push({ label: 'Diluted EPS', value: `₹${currentData.diluted_eps.toFixed(2)}` });
   }
+
+  // Dividend Per Share
+  if (currentData.income_statement.dividend_per_share !== undefined) {
+    metaItems.push({ label: 'Dividend', value: `₹${currentData.income_statement.dividend_per_share.toFixed(2)}` });
+  }
+
+  // Gross Profit
+  if (currentData.income_statement.gross_profit !== undefined) {
+    metaItems.push({ label: 'Gross Profit', value: formatINR(currentData.income_statement.gross_profit) });
+  }
+
+  // EBIT (Operating Income)
+  if (currentData.income_statement.operating_income !== undefined) {
+    metaItems.push({ label: 'EBIT', value: formatINR(currentData.income_statement.operating_income) });
+  }
+
+  // EBITDA
+  if (currentData.income_statement.ebitda !== undefined) {
+    metaItems.push({ label: 'EBITDA', value: formatINR(currentData.income_statement.ebitda) });
+  }
+
+  // Tax Rate
+  if (currentData.income_statement.tax_rate !== undefined) {
+    metaItems.push({ label: 'Tax Rate', value: `${currentData.income_statement.tax_rate.toFixed(1)}%` });
+  }
+
+  // Render meta items
+  companyMetaContainer.innerHTML = metaItems.map(item => `
+    <span class="meta-item">
+      <span class="meta-label">${item.label}:</span> ${item.value}
+    </span>
+  `).join('');
 }
 
 // Validate JSON data
@@ -598,17 +658,38 @@ function closeModal() {
 function populateModalForm() {
   if (!currentData) return;
 
+  // Revenue & Cost
   modalRevenue.value = currentData.income_statement.revenue.toString();
   modalOtherIncome.value = currentData.income_statement.other_income.toString();
+  modalCogs.value = currentData.income_statement.cost_of_goods_sold?.toString() || '';
+  modalGrossProfit.value = currentData.income_statement.gross_profit?.toString() || '';
+
+  // Operating Expenses
   modalExpenses.value = currentData.income_statement.total_expenses.toString();
+  modalSga.value = currentData.income_statement.selling_general_admin?.toString() || '';
+  modalRd.value = currentData.income_statement.research_development?.toString() || '';
+  modalDepreciation.value = currentData.income_statement.depreciation_amortization?.toString() || '';
+
+  // Profitability
+  modalOperatingIncome.value = currentData.income_statement.operating_income?.toString() || '';
+  modalEbitda.value = currentData.income_statement.ebitda?.toString() || '';
+  modalPbt.value = currentData.income_statement.pbt.toString();
   modalPat.value = currentData.income_statement.pat.toString();
 
+  // Interest & Taxes
+  modalInterestExpense.value = currentData.income_statement.interest_expense?.toString() || '';
+  modalInterestIncome.value = currentData.income_statement.interest_income?.toString() || '';
+  modalIncomeTax.value = currentData.income_statement.income_tax?.toString() || '';
+  modalTaxRate.value = currentData.income_statement.tax_rate?.toString() || '';
+
+  // Assets
   const totalFixedAssets = Object.values(currentData.assets.fixed_assets).reduce((a, b) => a + b, 0);
   modalFixedAssets.value = totalFixedAssets.toString();
   modalInventories.value = currentData.assets.current_assets.inventories.toString();
   modalReceivables.value = currentData.assets.current_assets.trade_receivables.toString();
   modalCash.value = currentData.assets.current_assets.cash.toString();
 
+  // Liabilities
   const totalEquity = Object.values(currentData.liabilities.equity).reduce((a, b) => a + b, 0);
   modalEquity.value = totalEquity.toString();
   modalLongTermDebt.value = currentData.liabilities.non_current_liabilities.long_term_borrowings.toString();
@@ -618,24 +699,43 @@ function populateModalForm() {
     currentData.liabilities.current_liabilities.trade_payables;
   modalOtherLiabilities.value = totalOtherLiabilities.toString();
 
-  // Optional fields
+  // Valuation & Per Share
   modalMarketCap.value = currentData.market_cap?.toString() || '';
   modalSharePrice.value = currentData.share_price?.toString() || '';
   modalEps.value = currentData.eps?.toString() || '';
   modalDilutedEps.value = currentData.diluted_eps?.toString() || '';
+  modalDividend.value = currentData.income_statement.dividend_per_share?.toString() || '';
+  modalTotalShares.value = currentData.total_shares?.toString() || '';
 }
 
 function saveModalForm() {
   if (!currentData) return;
 
-  // Update income statement
+  // Revenue & Cost
   currentData.income_statement.revenue = parseFloat(modalRevenue.value) || 0;
   currentData.income_statement.other_income = parseFloat(modalOtherIncome.value) || 0;
-  currentData.income_statement.total_expenses = parseFloat(modalExpenses.value) || 0;
-  currentData.income_statement.pat = parseFloat(modalPat.value) || 0;
-  currentData.income_statement.pbt = currentData.income_statement.pat; // Simplified
+  if (modalCogs.value) currentData.income_statement.cost_of_goods_sold = parseFloat(modalCogs.value);
+  if (modalGrossProfit.value) currentData.income_statement.gross_profit = parseFloat(modalGrossProfit.value);
 
-  // Update assets
+  // Operating Expenses
+  currentData.income_statement.total_expenses = parseFloat(modalExpenses.value) || 0;
+  if (modalSga.value) currentData.income_statement.selling_general_admin = parseFloat(modalSga.value);
+  if (modalRd.value) currentData.income_statement.research_development = parseFloat(modalRd.value);
+  if (modalDepreciation.value) currentData.income_statement.depreciation_amortization = parseFloat(modalDepreciation.value);
+
+  // Profitability
+  if (modalOperatingIncome.value) currentData.income_statement.operating_income = parseFloat(modalOperatingIncome.value);
+  if (modalEbitda.value) currentData.income_statement.ebitda = parseFloat(modalEbitda.value);
+  currentData.income_statement.pbt = parseFloat(modalPbt.value) || currentData.income_statement.pat;
+  currentData.income_statement.pat = parseFloat(modalPat.value) || 0;
+
+  // Interest & Taxes
+  if (modalInterestExpense.value) currentData.income_statement.interest_expense = parseFloat(modalInterestExpense.value);
+  if (modalInterestIncome.value) currentData.income_statement.interest_income = parseFloat(modalInterestIncome.value);
+  if (modalIncomeTax.value) currentData.income_statement.income_tax = parseFloat(modalIncomeTax.value);
+  if (modalTaxRate.value) currentData.income_statement.tax_rate = parseFloat(modalTaxRate.value);
+
+  // Assets
   const fixedAssets = parseFloat(modalFixedAssets.value) || 0;
   currentData.assets.fixed_assets.property_equipment = Math.round(fixedAssets * 0.25);
   currentData.assets.fixed_assets.intangible_assets = Math.round(fixedAssets * 0.33);
@@ -646,7 +746,7 @@ function saveModalForm() {
   currentData.assets.current_assets.cash = parseFloat(modalCash.value) || 0;
   currentData.assets.current_assets.other_current = parseFloat(modalCash.value) * 75; // Simplified
 
-  // Update liabilities
+  // Liabilities
   const equity = parseFloat(modalEquity.value) || 0;
   currentData.liabilities.equity.share_capital = Math.round(equity * 0.19);
   currentData.liabilities.equity.reserves_surplus = Math.round(equity * 0.81);
@@ -659,11 +759,13 @@ function saveModalForm() {
     (parseFloat(modalOtherLiabilities.value) || 0) * 0.22
   );
 
-  // Optional fields
+  // Valuation & Per Share
   if (modalMarketCap.value) currentData.market_cap = parseFloat(modalMarketCap.value);
   if (modalSharePrice.value) currentData.share_price = parseFloat(modalSharePrice.value);
   if (modalEps.value) currentData.eps = parseFloat(modalEps.value);
   if (modalDilutedEps.value) currentData.diluted_eps = parseFloat(modalDilutedEps.value);
+  if (modalDividend.value) currentData.income_statement.dividend_per_share = parseFloat(modalDividend.value);
+  if (modalTotalShares.value) currentData.total_shares = parseFloat(modalTotalShares.value);
 
   // Recalculate metrics and update UI
   currentMetrics = calculateMetrics(currentData, cogsPercentage);

@@ -965,7 +965,7 @@
 
     @media (max-width: 500px) {
       .form-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
@@ -1000,13 +1000,8 @@
     <!-- Company Name Display -->
     <div class="company-name-display" id="company-display">
       <h2 id="company-name">Loading...</h2>
-      <div class="company-meta">
-        <span class="meta-item"><span class="meta-label">Promoter Holding:</span> <span
-            id="promoter-holding">--</span></span>
-        <span class="meta-item"><span class="meta-label">Market Cap:</span> <span id="market-cap">--</span></span>
-        <span class="meta-item"><span class="meta-label">EPS:</span> <span id="eps-display">--</span></span>
-        <span class="meta-item"><span class="meta-label">Diluted EPS:</span> <span
-            id="diluted-eps-display">--</span></span>
+      <div class="company-meta" id="company-meta-container">
+        <!-- Meta items will be dynamically rendered based on available data -->
       </div>
     </div>
 
@@ -1019,7 +1014,7 @@
         </div>
         <div class="modal-body">
           <div class="form-section">
-            <div class="form-section-title">Income Statement</div>
+            <div class="form-section-title">Revenue & Cost</div>
             <div class="form-grid">
               <div class="form-group">
                 <label for="modal-revenue">Revenue</label>
@@ -1030,12 +1025,78 @@
                 <input type="number" id="modal-other-income" step="1000" />
               </div>
               <div class="form-group">
+                <label for="modal-cogs">Cost of Goods Sold</label>
+                <input type="number" id="modal-cogs" step="100000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-gross-profit">Gross Profit</label>
+                <input type="number" id="modal-gross-profit" step="100000" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Operating Expenses</div>
+            <div class="form-grid">
+              <div class="form-group">
                 <label for="modal-expenses">Total Expenses</label>
                 <input type="number" id="modal-expenses" step="100000" />
               </div>
               <div class="form-group">
+                <label for="modal-sga">SG&A Expenses</label>
+                <input type="number" id="modal-sga" step="10000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-rd">R&D Expenses</label>
+                <input type="number" id="modal-rd" step="10000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-depreciation">Depreciation</label>
+                <input type="number" id="modal-depreciation" step="10000" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Profitability</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="modal-operating-income">Operating Income (EBIT)</label>
+                <input type="number" id="modal-operating-income" step="10000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-ebitda">EBITDA</label>
+                <input type="number" id="modal-ebitda" step="10000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-pbt">PBT</label>
+                <input type="number" id="modal-pbt" step="10000" />
+              </div>
+              <div class="form-group">
                 <label for="modal-pat">PAT (Net Profit)</label>
                 <input type="number" id="modal-pat" step="10000" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Interest & Taxes</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="modal-interest-expense">Interest Expense</label>
+                <input type="number" id="modal-interest-expense" step="1000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-interest-income">Interest Income</label>
+                <input type="number" id="modal-interest-income" step="1000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-income-tax">Income Tax</label>
+                <input type="number" id="modal-income-tax" step="1000" />
+              </div>
+              <div class="form-group">
+                <label for="modal-tax-rate">Tax Rate (%)</label>
+                <input type="number" id="modal-tax-rate" step="0.1" />
               </div>
             </div>
           </div>
@@ -1085,7 +1146,7 @@
           </div>
 
           <div class="form-section">
-            <div class="form-section-title">Valuation & Market Data (Optional)</div>
+            <div class="form-section-title">Valuation & Per Share (Optional)</div>
             <div class="form-grid">
               <div class="form-group">
                 <label for="modal-market-cap">Market Cap</label>
@@ -1096,12 +1157,20 @@
                 <input type="number" id="modal-share-price" step="0.01" />
               </div>
               <div class="form-group">
-                <label for="modal-eps">EPS</label>
+                <label for="modal-eps">Basic EPS</label>
                 <input type="number" id="modal-eps" step="0.01" />
               </div>
               <div class="form-group">
                 <label for="modal-diluted-eps">Diluted EPS</label>
                 <input type="number" id="modal-diluted-eps" step="0.01" />
+              </div>
+              <div class="form-group">
+                <label for="modal-dividend">Dividend Per Share</label>
+                <input type="number" id="modal-dividend" step="0.01" />
+              </div>
+              <div class="form-group">
+                <label for="modal-total-shares">Total Shares</label>
+                <input type="number" id="modal-total-shares" step="1000" />
               </div>
             </div>
           </div>

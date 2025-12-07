@@ -19,25 +19,42 @@ export function createKeyMetricsChart(
   // Clear existing content
   container.innerHTML = '';
 
-  const summaryData = [
+  // Build summary data dynamically based on available fields
+  const summaryData: [string, string, string?][] = [
     ['Total Assets', formatINR(metrics.total_assets)],
     ['Total Equity', formatINR(metrics.total_equity)],
     ['Revenue', formatINR(data.income_statement.revenue)],
-    ['Net Profit', formatINR(data.income_statement.pat)],
-    ['Net Margin', `${metrics.net_margin.toFixed(1)}%`],
-    ['ROE', `${metrics.roe.toFixed(1)}%`],
-    ['Current Ratio', metrics.current_ratio.toFixed(2)],
-    ['Debt/Equity', metrics.debt_to_equity.toFixed(2)],
-    ['Cash', formatINR(data.assets.current_assets.cash)],
-    ['Working Capital', formatINR(metrics.working_capital)],
   ];
+
+  // Conditionally add income statement details
+  if (data.income_statement.cost_of_goods_sold !== undefined) {
+    summaryData.push(['COGS', formatINR(data.income_statement.cost_of_goods_sold)]);
+  }
+  if (data.income_statement.gross_profit !== undefined) {
+    summaryData.push(['Gross Profit', formatINR(data.income_statement.gross_profit), 'positive']);
+  }
+  if (data.income_statement.operating_income !== undefined) {
+    summaryData.push(['EBIT', formatINR(data.income_statement.operating_income), data.income_statement.operating_income > 0 ? 'positive' : 'negative']);
+  }
+  if (data.income_statement.ebitda !== undefined) {
+    summaryData.push(['EBITDA', formatINR(data.income_statement.ebitda), data.income_statement.ebitda > 0 ? 'positive' : 'negative']);
+  }
+
+  // Always show core metrics
+  summaryData.push(['Net Profit', formatINR(data.income_statement.pat), data.income_statement.pat > 0 ? 'positive' : 'negative']);
+  summaryData.push(['Net Margin', `${metrics.net_margin.toFixed(1)}%`, metrics.net_margin > 0 ? 'positive' : 'negative']);
+  summaryData.push(['ROE', `${metrics.roe.toFixed(1)}%`]);
+  summaryData.push(['Current Ratio', metrics.current_ratio.toFixed(2)]);
+  summaryData.push(['Debt/Equity', metrics.debt_to_equity.toFixed(2)]);
+  summaryData.push(['Cash', formatINR(data.assets.current_assets.cash), data.assets.current_assets.cash >= 100000 ? 'positive' : 'negative']);
+  summaryData.push(['Working Capital', formatINR(metrics.working_capital), metrics.working_capital >= 0 ? 'positive' : 'negative']);
 
   const table = document.createElement('table');
   table.style.width = '100%';
   table.style.borderCollapse = 'collapse';
   table.style.fontSize = '13px';
 
-  summaryData.forEach(([label, value]) => {
+  summaryData.forEach(([label, value, colorClass]) => {
     const row = table.insertRow();
     const cell1 = row.insertCell();
     const cell2 = row.insertCell();
@@ -53,14 +70,11 @@ export function createKeyMetricsChart(
     cell2.style.textAlign = 'right';
     cell2.style.fontWeight = '600';
 
-    // Color coding
-    if (label === 'Net Profit') {
-      cell2.style.color = data.income_statement.pat > 0 ? '#4caf50' : '#f44336';
-    } else if (label === 'Cash') {
-      cell2.style.color =
-        data.assets.current_assets.cash >= 100000 ? '#4caf50' : '#f44336';
-    } else if (label === 'Working Capital') {
-      cell2.style.color = metrics.working_capital >= 0 ? '#4caf50' : '#f44336';
+    // Apply color coding
+    if (colorClass === 'positive') {
+      cell2.style.color = '#4caf50';
+    } else if (colorClass === 'negative') {
+      cell2.style.color = '#f44336';
     }
   });
 
