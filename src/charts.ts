@@ -28,26 +28,57 @@ export function createKeyMetricsChart(
 
   // Conditionally add income statement details
   if (data.income_statement.cost_of_goods_sold !== undefined) {
-    summaryData.push(['COGS', formatINR(data.income_statement.cost_of_goods_sold)]);
+    summaryData.push([
+      'COGS',
+      formatINR(data.income_statement.cost_of_goods_sold),
+    ]);
   }
   if (data.income_statement.gross_profit !== undefined) {
-    summaryData.push(['Gross Profit', formatINR(data.income_statement.gross_profit), 'positive']);
+    summaryData.push([
+      'Gross Profit',
+      formatINR(data.income_statement.gross_profit),
+      'positive',
+    ]);
   }
   if (data.income_statement.operating_income !== undefined) {
-    summaryData.push(['EBIT', formatINR(data.income_statement.operating_income), data.income_statement.operating_income > 0 ? 'positive' : 'negative']);
+    summaryData.push([
+      'EBIT',
+      formatINR(data.income_statement.operating_income),
+      data.income_statement.operating_income > 0 ? 'positive' : 'negative',
+    ]);
   }
   if (data.income_statement.ebitda !== undefined) {
-    summaryData.push(['EBITDA', formatINR(data.income_statement.ebitda), data.income_statement.ebitda > 0 ? 'positive' : 'negative']);
+    summaryData.push([
+      'EBITDA',
+      formatINR(data.income_statement.ebitda),
+      data.income_statement.ebitda > 0 ? 'positive' : 'negative',
+    ]);
   }
 
   // Always show core metrics
-  summaryData.push(['Net Profit', formatINR(data.income_statement.pat), data.income_statement.pat > 0 ? 'positive' : 'negative']);
-  summaryData.push(['Net Margin', `${metrics.net_margin.toFixed(1)}%`, metrics.net_margin > 0 ? 'positive' : 'negative']);
+  summaryData.push([
+    'Net Profit',
+    formatINR(data.income_statement.pat),
+    data.income_statement.pat > 0 ? 'positive' : 'negative',
+  ]);
+  summaryData.push([
+    'Net Margin',
+    `${metrics.net_margin.toFixed(1)}%`,
+    metrics.net_margin > 0 ? 'positive' : 'negative',
+  ]);
   summaryData.push(['ROE', `${metrics.roe.toFixed(1)}%`]);
   summaryData.push(['Current Ratio', metrics.current_ratio.toFixed(2)]);
   summaryData.push(['Debt/Equity', metrics.debt_to_equity.toFixed(2)]);
-  summaryData.push(['Cash', formatINR(data.assets.current_assets.cash), data.assets.current_assets.cash >= 100000 ? 'positive' : 'negative']);
-  summaryData.push(['Working Capital', formatINR(metrics.working_capital), metrics.working_capital >= 0 ? 'positive' : 'negative']);
+  summaryData.push([
+    'Cash',
+    formatINR(data.assets.current_assets.cash),
+    data.assets.current_assets.cash >= 100000 ? 'positive' : 'negative',
+  ]);
+  summaryData.push([
+    'Working Capital',
+    formatINR(metrics.working_capital),
+    metrics.working_capital >= 0 ? 'positive' : 'negative',
+  ]);
 
   const table = document.createElement('table');
   table.style.width = '100%';
@@ -177,7 +208,13 @@ export function createProfitLossChart(
   const income = data.income_statement;
 
   // Show actual individual values for P&L waterfall
-  const categories = ['Revenue', 'Other Income', 'Expenses', 'Tax', 'Net Profit'];
+  const categories = [
+    'Revenue',
+    'Other Income',
+    'Expenses',
+    'Tax',
+    'Net Profit',
+  ];
   const tax = income.pbt - income.pat;
 
   // Individual values (expenses and tax shown as positive but colored red)
@@ -221,9 +258,9 @@ export function createProfitLossChart(
                 return `${label}: -${formatted}`;
               }
               return `${label}: ${formatted}`;
-            }
-          }
-        }
+            },
+          },
+        },
       },
       scales: {
         y: {
@@ -231,8 +268,8 @@ export function createProfitLossChart(
           ticks: {
             callback: function (value) {
               return formatINR(Number(value) / scale);
-            }
-          }
+            },
+          },
         },
       },
     },
@@ -244,47 +281,88 @@ export function createProfitLossChart(
 }
 
 // Insight generation functions
-export function generateKeyMetricsInsights(data: FinancialData, metrics: Metrics): string {
+export function generateKeyMetricsInsights(
+  data: FinancialData,
+  metrics: Metrics
+): string {
   const insights: string[] = [];
 
-  if (metrics.net_margin > 5) insights.push("Strong profitability with healthy net margin");
-  else if (metrics.net_margin < 0) insights.push("Operating at a loss");
-  else insights.push("Moderate profitability");
+  if (metrics.net_margin > 5)
+    insights.push('Strong profitability with healthy net margin');
+  else if (metrics.net_margin < 0) insights.push('Operating at a loss');
+  else insights.push('Moderate profitability');
 
-  if (metrics.roe > 15) insights.push("Excellent return on equity");
-  else if (metrics.roe < 5) insights.push("Low return on equity");
-  else insights.push("Decent return on equity");
+  if (metrics.roe > 15) insights.push('Excellent return on equity');
+  else if (metrics.roe < 5) insights.push('Low return on equity');
+  else insights.push('Decent return on equity');
 
-  if (metrics.current_ratio > 1.5) insights.push("Strong liquidity position");
-  else if (metrics.current_ratio < 1) insights.push("Potential liquidity issues");
-  else insights.push("Adequate liquidity");
+  if (metrics.current_ratio > 1.5) insights.push('Strong liquidity position');
+  else if (metrics.current_ratio < 1)
+    insights.push('Potential liquidity issues');
+  else insights.push('Adequate liquidity');
 
-  if (metrics.debt_to_equity < 0.5) insights.push("Conservative leverage");
-  else if (metrics.debt_to_equity > 1) insights.push("High leverage risk");
-  else insights.push("Moderate leverage");
+  if (metrics.debt_to_equity < 0.5) insights.push('Conservative leverage');
+  else if (metrics.debt_to_equity > 1) insights.push('High leverage risk');
+  else insights.push('Moderate leverage');
 
-  if (data.assets.current_assets.cash >= 100000) insights.push("Good cash reserves");
-  else insights.push("Limited cash reserves");
+  if (data.assets.current_assets.cash >= 100000)
+    insights.push('Good cash reserves');
+  else insights.push('Limited cash reserves');
 
-  if (metrics.working_capital >= 0) insights.push("Positive working capital");
-  else insights.push("Negative working capital - potential cash flow issues");
+  if (metrics.working_capital >= 0) insights.push('Positive working capital');
+  else insights.push('Negative working capital - potential cash flow issues');
 
   return insights.join('. ') + '.';
 }
 
-export function generateHealthScorecardInsights(metrics: Metrics, thresholdMultiplier: number = 1.0): string {
+export function generateHealthScorecardInsights(
+  metrics: Metrics,
+  thresholdMultiplier: number = 1.0
+): string {
   const scorecard = [
-    ['Current Ratio', metrics.current_ratio, 1.5 * thresholdMultiplier, 2.5 * thresholdMultiplier],
-    ['Quick Ratio', metrics.quick_ratio, 0.8 * thresholdMultiplier, 1.2 * thresholdMultiplier],
-    ['Cash Ratio', metrics.cash_ratio, 0.2 * thresholdMultiplier, 0.5 * thresholdMultiplier],
-    ['Net Margin %', metrics.net_margin, 3 * thresholdMultiplier, 8 * thresholdMultiplier],
+    [
+      'Current Ratio',
+      metrics.current_ratio,
+      1.5 * thresholdMultiplier,
+      2.5 * thresholdMultiplier,
+    ],
+    [
+      'Quick Ratio',
+      metrics.quick_ratio,
+      0.8 * thresholdMultiplier,
+      1.2 * thresholdMultiplier,
+    ],
+    [
+      'Cash Ratio',
+      metrics.cash_ratio,
+      0.2 * thresholdMultiplier,
+      0.5 * thresholdMultiplier,
+    ],
+    [
+      'Net Margin %',
+      metrics.net_margin,
+      3 * thresholdMultiplier,
+      8 * thresholdMultiplier,
+    ],
     ['ROE %', metrics.roe, 10 * thresholdMultiplier, 20 * thresholdMultiplier],
     ['ROA %', metrics.roa, 5 * thresholdMultiplier, 10 * thresholdMultiplier],
-    ['Debt/Equity', metrics.debt_to_equity, 0.3 * thresholdMultiplier, 0.7 * thresholdMultiplier],
-    ['Asset Turnover', metrics.asset_turnover, 1.0 * thresholdMultiplier, 2.0 * thresholdMultiplier],
+    [
+      'Debt/Equity',
+      metrics.debt_to_equity,
+      0.3 * thresholdMultiplier,
+      0.7 * thresholdMultiplier,
+    ],
+    [
+      'Asset Turnover',
+      metrics.asset_turnover,
+      1.0 * thresholdMultiplier,
+      2.0 * thresholdMultiplier,
+    ],
   ];
 
-  let excellent = 0, moderate = 0, concerning = 0;
+  let excellent = 0,
+    moderate = 0,
+    concerning = 0;
 
   scorecard.forEach(([label, value, lowThresh, highThresh]) => {
     if (value >= highThresh) excellent++;
@@ -307,73 +385,97 @@ export function generateProfitLossInsights(data: FinancialData): string {
   }
 }
 
-export function generateAssetCompositionInsights(data: FinancialData, metrics: Metrics): string {
+export function generateAssetCompositionInsights(
+  data: FinancialData,
+  metrics: Metrics
+): string {
   const { current_assets, fixed_assets } = data.assets;
   const totalAssets = metrics.total_assets;
-  const fixedPct = (Object.values(fixed_assets).reduce((a, b) => a + b, 0) / totalAssets) * 100;
-  const currentPct = (Object.values(current_assets).reduce((a, b) => a + b, 0) / totalAssets) * 100;
+  const fixedPct =
+    (Object.values(fixed_assets).reduce((a, b) => a + b, 0) / totalAssets) *
+    100;
+  const currentPct =
+    (Object.values(current_assets).reduce((a, b) => a + b, 0) / totalAssets) *
+    100;
 
   const insights: string[] = [];
 
-  if (current_assets.cash < 100000) insights.push("Low cash reserves");
-  if (current_assets.inventories > totalAssets * 0.3) insights.push("High inventory levels");
-  if (current_assets.trade_receivables > totalAssets * 0.2) insights.push("Significant receivables");
-  if (fixedPct > 70) insights.push("Asset-heavy with high fixed assets");
-  else if (fixedPct < 30) insights.push("Light asset base");
+  if (current_assets.cash < 100000) insights.push('Low cash reserves');
+  if (current_assets.inventories > totalAssets * 0.3)
+    insights.push('High inventory levels');
+  if (current_assets.trade_receivables > totalAssets * 0.2)
+    insights.push('Significant receivables');
+  if (fixedPct > 70) insights.push('Asset-heavy with high fixed assets');
+  else if (fixedPct < 30) insights.push('Light asset base');
 
-  return insights.length > 0 ? insights.join('. ') + '.' : 'Balanced asset composition.';
+  return insights.length > 0
+    ? insights.join('. ') + '.'
+    : 'Balanced asset composition.';
 }
 
-export function generateLiabilityCompositionInsights(data: FinancialData, metrics: Metrics): string {
+export function generateLiabilityCompositionInsights(
+  data: FinancialData,
+  metrics: Metrics
+): string {
   const totalLiab = metrics.total_liabilities;
-  const equityPct = (metrics.total_equity / (metrics.total_equity + totalLiab)) * 100;
-  const debtPct = (metrics.debt_to_assets) * 100;
+  const equityPct =
+    (metrics.total_equity / (metrics.total_equity + totalLiab)) * 100;
+  const debtPct = metrics.debt_to_assets * 100;
 
   const insights: string[] = [];
 
-  if (equityPct > 60) insights.push("Strong equity base");
-  else if (equityPct < 30) insights.push("Low equity, high leverage");
+  if (equityPct > 60) insights.push('Strong equity base');
+  else if (equityPct < 30) insights.push('Low equity, high leverage');
 
-  if (debtPct > 50) insights.push("High debt levels");
-  else if (debtPct < 20) insights.push("Conservative debt usage");
+  if (debtPct > 50) insights.push('High debt levels');
+  else if (debtPct < 20) insights.push('Conservative debt usage');
 
-  if (metrics.debt_to_equity > 1) insights.push("Debt exceeds equity");
-  else insights.push("Equity exceeds debt");
+  if (metrics.debt_to_equity > 1) insights.push('Debt exceeds equity');
+  else insights.push('Equity exceeds debt');
 
   return insights.join('. ') + '.';
 }
 
-export function generateLiquidityInsights(metrics: Metrics, target: number = 1.5): string {
+export function generateLiquidityInsights(
+  metrics: Metrics,
+  target: number = 1.5
+): string {
   const ratios = [
     { name: 'Current Ratio', value: metrics.current_ratio, target: target },
     { name: 'Quick Ratio', value: metrics.quick_ratio, target: target * 0.67 },
     { name: 'Cash Ratio', value: metrics.cash_ratio, target: target * 0.2 },
   ];
 
-  const meeting = ratios.filter(r => r.value >= r.target).length;
+  const meeting = ratios.filter((r) => r.value >= r.target).length;
   const total = ratios.length;
 
-  if (meeting === total) return `Strong liquidity: All ${total} ratios meet or exceed targets.`;
-  else if (meeting >= total / 2) return `Moderate liquidity: ${meeting}/${total} ratios meet targets.`;
+  if (meeting === total)
+    return `Strong liquidity: All ${total} ratios meet or exceed targets.`;
+  else if (meeting >= total / 2)
+    return `Moderate liquidity: ${meeting}/${total} ratios meet targets.`;
   else return `Weak liquidity: Only ${meeting}/${total} ratios meet targets.`;
 }
 
-export function generateWorkingCapitalInsights(metrics: Metrics, benchmark: number = 90): string {
+export function generateWorkingCapitalInsights(
+  metrics: Metrics,
+  benchmark: number = 90
+): string {
   const { dio, dso, dpo, ccc } = metrics;
 
   const insights: string[] = [];
 
-  if (dio > benchmark * 1.5) insights.push("High inventory holding period");
-  else if (dio < benchmark * 0.5) insights.push("Efficient inventory management");
+  if (dio > benchmark * 1.5) insights.push('High inventory holding period');
+  else if (dio < benchmark * 0.5)
+    insights.push('Efficient inventory management');
 
-  if (dso > benchmark * 1.5) insights.push("Slow receivables collection");
-  else if (dso < benchmark * 0.5) insights.push("Fast receivables collection");
+  if (dso > benchmark * 1.5) insights.push('Slow receivables collection');
+  else if (dso < benchmark * 0.5) insights.push('Fast receivables collection');
 
-  if (dpo < benchmark * 0.5) insights.push("Quick payables settlement");
-  else if (dpo > benchmark * 1.5) insights.push("Extended payables period");
+  if (dpo < benchmark * 0.5) insights.push('Quick payables settlement');
+  else if (dpo > benchmark * 1.5) insights.push('Extended payables period');
 
-  if (ccc < benchmark) insights.push("Efficient cash conversion cycle");
-  else insights.push("Slow cash conversion cycle");
+  if (ccc < benchmark) insights.push('Efficient cash conversion cycle');
+  else insights.push('Slow cash conversion cycle');
 
   return insights.join('. ') + '.';
 }
@@ -468,7 +570,7 @@ export function createLiabilityCompositionChart(
     ),
     liabilities.current_liabilities.trade_payables,
     Object.values(liabilities.current_liabilities).reduce((a, b) => a + b, 0) -
-    liabilities.current_liabilities.trade_payables,
+      liabilities.current_liabilities.trade_payables,
   ];
 
   // Adjust opacity based on focus (0 = all equal, 1 = emphasize largest)
