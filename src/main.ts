@@ -1098,9 +1098,9 @@ function saveModalForm() {
   // Recalculate metrics and update UI
   currentMetrics = calculateMetrics(currentData, cogsPercentage);
 
-  // Save back to localStorage if it's a local file
+  // Save the edited data to localStorage with the company key
   const currentCompany = companySelector.value;
-  if (currentCompany && localStorage.getItem(currentCompany)) {
+  if (currentCompany) {
     localStorage.setItem(currentCompany, JSON.stringify(currentData));
   }
 
